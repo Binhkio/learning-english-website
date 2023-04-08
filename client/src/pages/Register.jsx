@@ -1,26 +1,44 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import validateEmail from '../utils/validation/validateEmail'
+import InputCustom from '../components/InputCustom'
+import axios from 'axios'
 
 const Register = () => {
-    const [email, setEmail] = useState("")
-    const [name, setName] = useState("")
-    const [password, setPassword] = useState("")
+    const [formValidate, setFormValidate] = useState(true)
+
+    let refEmail = useRef()
+    let refName = useRef()
+    let refPassword = useRef()
 
     const handleRegister = async () => {
-        const formData = {
-            email,
-            name,
-            password
+        const checkValidate = validateEmail(refEmail.current)
+        if(formValidate !== checkValidate){
+            setFormValidate(!formValidate)
         }
-        console.log("Clicked Sign Up button", formData)
+        if(checkValidate === true){
+            const formData = {
+                email: refEmail.current,
+                name: refName.current,
+                password: refPassword.current
+            }
+            console.log("Clicked Sign Up button", formData)
+            
+            axios.post("???", formData).then(
+                (response) => {
+
+                },
+                (error) => {
+                    console.log("[POST] register form data", error)
+                }
+            )
+        }
     }
 
     return (
         <Box
             display="grid"
             alignItems="center"
-            // justifyContent="center"
             height="100vh"
             width="100vw"
             >
@@ -37,33 +55,9 @@ const Register = () => {
                 >
                     REGISTER
                 </Typography>
-                <TextField
-                    size="small"
-                    label="Email"
-                    variant="outlined"
-                    required
-                    placeholder="abcde123@gmail.com"
-                    autoFocus
-                    error={!validateEmail(email)}
-                    helperText={!validateEmail(email) && "Invalid email"}
-                    onChange={e => setEmail(e.target.value)}
-                />
-                <TextField
-                    size="small"
-                    label="Name"
-                    variant="outlined"
-                    required
-                    placeholder="Nguyen Van A"
-                    onChange={e => setName(e.target.value)}
-                />
-                <TextField
-                    size="small"
-                    label="Password"
-                    variant="outlined"
-                    required
-                    type="password"
-                    onChange={e => setPassword(e.target.value)}
-                />
+                <InputCustom type="email" ref={refEmail}/>
+                <InputCustom ref={refName} label="Name" placeholder="Nguyen Van A"/>
+                <InputCustom type="password" ref={refPassword}/>
                 <Button
                     variant="outlined"
                     onClick={handleRegister}
