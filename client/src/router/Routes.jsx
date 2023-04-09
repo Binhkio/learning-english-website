@@ -14,8 +14,8 @@ const Routes = () => {
     <Router>
         <Switch>
             {
-                appRoutersInit.map((item) => {
-                    return <Route path={item.path} component={item.component} />
+                appRoutersInit.map((item, index) => {
+                    return <Route path={item.path} key={index} component={item.component} />
                 })
             }
         </Switch>
