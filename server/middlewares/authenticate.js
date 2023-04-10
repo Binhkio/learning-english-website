@@ -1,14 +1,15 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const httpCode = require('../utils/httpCode')
+
 
 /* GET home page. */
 router.use(function(req, res, next) {
-  console.log("Check auth")
   const auth = true
   if(auth){
     next()
   }else{
-    res.status(401).send("Authentication failed.")
+    res.status(httpCode.UNAUTHORIZED).send("Authentication failed.")
   }
 });
 
