@@ -1,21 +1,16 @@
-import FirstPage from '../pages/FirstPage'
-import SecondPage from '../pages/SecondPage'
-
 import routers from '../constants/routers.js'
 import Register from '../pages/Register'
+import Login from '../pages/Login'
 
-const appRoutersInit = [{
-        path: routers.FIRST_PAGE,
-        component: FirstPage
-    },
-    {
-        path: routers.SECOND_PAGE,
-        component: SecondPage
-    },
+const appRoutersInit = [
     {
         path: routers.REGISTER,
         component: Register
-    }
+    },
+    {
+        path: routers.LOGIN,
+        component:Login
+    },
 ]
 
 export default appRoutersInit

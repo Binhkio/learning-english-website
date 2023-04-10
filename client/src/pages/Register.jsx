@@ -1,73 +1,80 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
-import { useRef, useState } from 'react'
-import validateEmail from '../utils/validation/validateEmail'
-import InputCustom from '../components/InputCustom'
-import axios from 'axios'
+import { Button, Typography } from '@mui/material';
+import { useRef, useState } from 'react';
+import validateEmail from '../utils/validate';
+import InputComponent from '../components/Input/InputComponent';
+import axios from 'axios';
+import '../access/style.scss'
 
 const Register = () => {
-    const [formValidate, setFormValidate] = useState(true)
+  const [formValidate, setFormValidate] = useState(true);
 
-    let refEmail = useRef()
-    let refName = useRef()
-    let refPassword = useRef()
+  const refEmail = useRef();
+  const refName = useRef();
+  const refPassword = useRef();
 
-    const handleRegister = async () => {
-        const checkValidate = validateEmail(refEmail.current)
-        if(formValidate !== checkValidate){
-            setFormValidate(!formValidate)
-        }
-        if(checkValidate === true){
-            const formData = {
-                email: refEmail.current,
-                name: refName.current,
-                password: refPassword.current
-            }
-            console.log("Clicked Sign Up button", formData)
-            
-            axios.post("???", formData).then(
-                (response) => {
+  const handleRegister = async () => {
+    const checkValidate = validateEmail(refEmail.current);
 
-                },
-                (error) => {
-                    console.log("[POST] register form data", error)
-                }
-            )
-        }
+    const email = refEmail.current.value;
+    const name = refName.current.value;
+    const password = refPassword.current.value;
+
+    if (!checkValidate) {
+      setFormValidate(checkValidate);
+      return;
     }
 
-    return (
-        <Box
-            display="grid"
-            alignItems="center"
-            height="100vh"
-            width="100vw"
-            >
-            <Box
-                display="grid"
-                justifyContent="center"
-                component="form"
-                gap="10px"
-            >
-                <Typography
-                    variant="h5"
-                    gutterBottom
-                    textAlign="center"
-                >
-                    REGISTER
-                </Typography>
-                <InputCustom type="email" ref={refEmail}/>
-                <InputCustom ref={refName} label="Name" placeholder="Nguyen Van A"/>
-                <InputCustom type="password" ref={refPassword}/>
-                <Button
-                    variant="outlined"
-                    onClick={handleRegister}
-                >
-                    Sign up
-                </Button>
+    const formData = { email, name, password };
+    console.log('Clicked Sign Up button', formData);
 
-            </Box>
-        </Box>
-    )
-}
+    await axios
+      .post('???', formData)
+      .then((response) => {
+        console.log('Success');
+      })
+      .catch((error) => {
+        console.log('error');
+      });
+  };
 
-export default Register
+  return (
+    <>
+      <Typography
+        variant="h5"
+        gutterBottom
+        textAlign="center">
+        REGISTER
+      </Typography>
+      <form>
+        <InputComponent
+          type="email"
+          label="Email"
+          required={true}
+          placeholder="abcde123@gmail.com"
+          ref={refEmail}
+        />
+        <InputComponent
+          type="text"
+          label="Name"
+          required={true}
+          placeholder="Nguyen Van A"
+          ref={refName}
+        />
+        <InputComponent
+          type="password"
+          label="Password"
+          required={true}
+          placeholder=""
+          ref={refPassword}
+        />
+        <Button
+          variant="outlined"
+          onClick={handleRegister}>
+          Sign up
+        </Button>
+      </form>
+    </>
+  );
+};
+
+export default Register;

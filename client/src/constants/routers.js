@@ -1,7 +1,6 @@
 const routers = {
-    FIRST_PAGE: '/first',
-    SECOND_PAGE: '/second',
-    REGISTER: '/register',
+    REGISTER: '/auth/register',
+    LOGIN: '/auth/login',
 }
 
 export default routers
