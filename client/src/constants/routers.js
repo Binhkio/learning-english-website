@@ -1,6 +1,6 @@
 const routers = {
-    REGISTER: '/auth/register',
-    LOGIN: '/auth/login',
-}
+  REGISTER: '/auth/register',
+  LOGIN: '/auth/login',
+};
 
-export default routers
+export default routers;

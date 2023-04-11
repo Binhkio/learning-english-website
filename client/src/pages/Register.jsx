@@ -1,80 +1,48 @@
-import { Button, Typography } from '@mui/material';
-import { useRef, useState } from 'react';
-import validateEmail from '../utils/validate';
-import InputComponent from '../components/Input/InputComponent';
-import axios from 'axios';
-import '../access/style.scss'
+/**
+ * Anh sẽ ví dụ về file Register của em
+ * Ở đây anh Có dùng thêm callback với memo vì các giá trị của email, name, password thay đổi rất nhiều, mà rule của react không cho như zậy í
+ * Nếu em để ý component con FormComponent sẽ có hàm handleChangeInputValue sẽ chạy khi ngươi dùng gõ phím => data có sự render nhiều lần
+ * Có thể em chỉ cần dùng context để pass hàm, gọi từ hàm con => cha nhưng mà lúc đó data sẽ thay đổi nhiều lần => memo giải quyết vấn đề này
+ * ngoài ra, anh dùng thêm use callback để tránh việc rerender nhiều lần :))))
+ *
+ */
+/* eslint-disable import/no-cycle */
+import { Typography } from '@mui/material';
+import {
+  createContext, useCallback, useMemo, useState,
+} from 'react';
+import FormComponent from '../components/Form/FormRegisterComponent';
 
-const Register = () => {
-  const [formValidate, setFormValidate] = useState(true);
+export const RegisterContext = createContext({});
 
-  const refEmail = useRef();
-  const refName = useRef();
-  const refPassword = useRef();
+function Register() {
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleRegister = async () => {
-    const checkValidate = validateEmail(refEmail.current);
+  const handleSetRegisterValue = useCallback((email, name, password) => {
+    setEmail(email);
+    setName(name);
+    setPassword(password);
+  }, []);
 
-    const email = refEmail.current.value;
-    const name = refName.current.value;
-    const password = refPassword.current.value;
-
-    if (!checkValidate) {
-      setFormValidate(checkValidate);
-      return;
-    }
-
-    const formData = { email, name, password };
-    console.log('Clicked Sign Up button', formData);
-
-    await axios
-      .post('???', formData)
-      .then((response) => {
-        console.log('Success');
-      })
-      .catch((error) => {
-        console.log('error');
-      });
-  };
+  const contextValueInit = useMemo(
+    () => (
+      {
+        email, name, password, handleSetRegisterValue,
+      }),
+    [email, name, password, handleSetRegisterValue],
+  );
 
   return (
-    <>
-      <Typography
-        variant="h5"
-        gutterBottom
-        textAlign="center">
-        REGISTER
+    <RegisterContext.Provider value={contextValueInit}>
+      <Typography variant="h5" gutterBottom textAlign="center">
+        Register
       </Typography>
-      <form>
-        <InputComponent
-          type="email"
-          label="Email"
-          required={true}
-          placeholder="abcde123@gmail.com"
-          ref={refEmail}
-        />
-        <InputComponent
-          type="text"
-          label="Name"
-          required={true}
-          placeholder="Nguyen Van A"
-          ref={refName}
-        />
-        <InputComponent
-          type="password"
-          label="Password"
-          required={true}
-          placeholder=""
-          ref={refPassword}
-        />
-        <Button
-          variant="outlined"
-          onClick={handleRegister}>
-          Sign up
-        </Button>
-      </form>
-    </>
+      <FormComponent handleSetRegisterValue={handleSetRegisterValue} />
+    </RegisterContext.Provider>
+
   );
-};
+}
 
 export default Register;
