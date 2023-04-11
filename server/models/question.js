@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 
-
 const Question = mongoose.Schema({
-    id: String,
     name: String,
     image: String, // url
     status: Boolean
