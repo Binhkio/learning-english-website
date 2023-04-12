@@ -18,5 +18,6 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'import/no-cycle': ['error', { maxDepth: Infinity }],
     'no-shadow': 'off',
+    'linebreak-style': 0,
   },
 };

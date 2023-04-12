@@ -1,32 +1,72 @@
 /* eslint-disable import/no-cycle */
-import { Typography } from '@mui/material';
-import React, {
-  createContext, useCallback, useMemo, useState,
-} from 'react';
-import FormComponent from '../components/Form/FormLoginComponent';
+import {
+  Button, FormControl, FormHelperText, TextField, Typography,
+} from '@mui/material';
+import { useState } from 'react';
+import validate from '../utils/validate';
 
-export const LoginContext = createContext({});
-
-function LoginPageComponent() {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayErrorForm, setDisplayErrorForm] = useState(false);
+  const [isValidated, setIsValidated] = useState(true);
 
-  const handleSetLoginValue = useCallback((email, password) => {
-    setEmail(email);
-    setPassword(password);
-  }, []);
+  const handleRegister = async () => {
+    const form = {
+      email,
+      password,
+    };
+    if (isValidated !== validate.validateEmail(email)) {
+      setIsValidated(!isValidated);
+    }
+    console.log('call api', form);
+    if (true) {
+      setDisplayErrorForm(true);
+    }
+  };
 
-  const contextValueInit = useMemo(() => (
-    { email, password, handleSetLoginValue }), [email, password, handleSetLoginValue]);
+  const handleCheckValidate = () => {
+    setIsValidated(validate.validateEmail(email));
+  };
 
   return (
-    <LoginContext.Provider value={contextValueInit}>
+    <>
       <Typography variant="h5" gutterBottom textAlign="center">
-        LOGIN
+        Login
       </Typography>
-      <FormComponent handleSetLoginValue={handleSetLoginValue} />
-    </LoginContext.Provider>
+      <FormControl className="form-controll">
+        <TextField
+          className="custom-textfield"
+          type="email"
+          size="small"
+          label="Email"
+          required
+          placeholder="abcde123@gmail.com"
+          onBlur={handleCheckValidate}
+          error={!isValidated}
+          helperText={!isValidated ? 'Invalid email' : ''}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          className="custom-textfield"
+          type="password"
+          size="small"
+          label="Password"
+          required
+          placeholder=""
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button disabled={!isValidated} variant="outlined" onClick={handleRegister}>
+          Sign in
+        </Button>
+        {displayErrorForm && (
+          <FormHelperText error={displayErrorForm} margin="dense">
+            adsad
+          </FormHelperText>
+        )}
+      </FormControl>
+    </>
   );
 }
 
-export default LoginPageComponent;
+export default Login;

@@ -1,47 +1,81 @@
-/**
- * Anh sẽ ví dụ về file Register của em
- * Ở đây anh Có dùng thêm callback với memo vì các giá trị của email, name, password thay đổi rất nhiều, mà rule của react không cho như zậy í
- * Nếu em để ý component con FormComponent sẽ có hàm handleChangeInputValue sẽ chạy khi ngươi dùng gõ phím => data có sự render nhiều lần
- * Có thể em chỉ cần dùng context để pass hàm, gọi từ hàm con => cha nhưng mà lúc đó data sẽ thay đổi nhiều lần => memo giải quyết vấn đề này
- * ngoài ra, anh dùng thêm use callback để tránh việc rerender nhiều lần :))))
- *
- */
 /* eslint-disable import/no-cycle */
-import { Typography } from '@mui/material';
 import {
-  createContext, useCallback, useMemo, useState,
-} from 'react';
-import FormComponent from '../components/Form/FormRegisterComponent';
-
-export const RegisterContext = createContext({});
+  Button, FormControl, FormHelperText, TextField, Typography,
+} from '@mui/material';
+import { useState } from 'react';
+import validate from '../utils/validate';
 
 function Register() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [displayErrorForm, setDisplayErrorForm] = useState(false);
+  const [isValidated, setIsValidated] = useState(true);
 
-  const handleSetRegisterValue = useCallback((email, name, password) => {
-    setEmail(email);
-    setName(name);
-    setPassword(password);
-  }, []);
+  const handleRegister = async () => {
+    const form = {
+      email,
+      name,
+      password,
+    };
+    if (isValidated) {
+      console.log('call api', form);
+      if (true) {
+        setDisplayErrorForm(true);
+      }
+    }
+  };
 
-  const contextValueInit = useMemo(
-    () => (
-      {
-        email, name, password, handleSetRegisterValue,
-      }),
-    [email, name, password, handleSetRegisterValue],
-  );
+  const handleCheckValidate = () => {
+    setIsValidated(validate.validateEmail(email));
+  };
 
   return (
-    <RegisterContext.Provider value={contextValueInit}>
+    <>
       <Typography variant="h5" gutterBottom textAlign="center">
         Register
       </Typography>
-      <FormComponent handleSetRegisterValue={handleSetRegisterValue} />
-    </RegisterContext.Provider>
-
+      <FormControl className="form-controll">
+        <TextField
+          className="custom-textfield"
+          type="email"
+          size="small"
+          label="Email"
+          required
+          placeholder="abcde123@gmail.com"
+          onBlur={handleCheckValidate}
+          error={!isValidated}
+          helperText={!isValidated ? 'Invalid email' : ''}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          className="custom-textfield"
+          type="text"
+          size="small"
+          label="Name"
+          required
+          placeholder="Enter your name"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <TextField
+          className="custom-textfield"
+          type="password"
+          size="small"
+          label="Password"
+          required
+          placeholder=""
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button disabled={!isValidated} variant="outlined" onClick={handleRegister}>
+          Sign up
+        </Button>
+        {displayErrorForm && (
+          <FormHelperText error={displayErrorForm} margin="dense">
+            adsad
+          </FormHelperText>
+        )}
+      </FormControl>
+    </>
   );
 }
 
