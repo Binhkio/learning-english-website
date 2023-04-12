@@ -1,5 +1,5 @@
-import * as React from 'react'
-import Routes from './router/Routes'
+import * as React from 'react';
+import Routes from './router/Routes';
 
 function App() {
   return (

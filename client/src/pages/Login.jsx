@@ -5,9 +5,8 @@ import {
 import { useState } from 'react';
 import validate from '../utils/validate';
 
-function Register() {
+function Login() {
   const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [displayErrorForm, setDisplayErrorForm] = useState(false);
   const [isValidated, setIsValidated] = useState(true);
@@ -15,14 +14,14 @@ function Register() {
   const handleRegister = async () => {
     const form = {
       email,
-      name,
       password,
     };
-    if (isValidated) {
-      console.log('call api', form);
-      if (true) {
-        setDisplayErrorForm(true);
-      }
+    if (isValidated !== validate.validateEmail(email)) {
+      setIsValidated(!isValidated);
+    }
+    console.log('call api', form);
+    if (true) {
+      setDisplayErrorForm(true);
     }
   };
 
@@ -33,7 +32,7 @@ function Register() {
   return (
     <>
       <Typography variant="h5" gutterBottom textAlign="center">
-        Register
+        Login
       </Typography>
       <FormControl className="form-controll">
         <TextField
@@ -50,15 +49,6 @@ function Register() {
         />
         <TextField
           className="custom-textfield"
-          type="text"
-          size="small"
-          label="Name"
-          required
-          placeholder="Enter your name"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <TextField
-          className="custom-textfield"
           type="password"
           size="small"
           label="Password"
@@ -67,7 +57,7 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button disabled={!isValidated} variant="outlined" onClick={handleRegister}>
-          Sign up
+          Sign in
         </Button>
         {displayErrorForm && (
           <FormHelperText error={displayErrorForm} margin="dense">
@@ -79,4 +69,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;
