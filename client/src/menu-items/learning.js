@@ -13,7 +13,7 @@ const learning = {
             id: 'learning',
             title: 'Learning',
             type: 'item',
-            url: '/learning/default',
+            url: '/',
             icon: icons.IconBackpack,
             breadcrumbs: true
         }
