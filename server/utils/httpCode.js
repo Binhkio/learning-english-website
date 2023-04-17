@@ -3,6 +3,11 @@ const httpCode = {
     CREATED_SUCCESS: 201,
     UNAUTHORIZED: 401,
     UNPROCESSABLE_ENTITY: 422,
+    BAD_REQUEST: 400,
+
+    USER_NOT_FOUND: 1001,
+    WRONG_PASSWORD: 1002,
+    USER_EXISTS: 1003,
 }
 
 module.exports = httpCode

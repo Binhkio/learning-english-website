@@ -1,5 +1,5 @@
-const User = require('../models/user')
-const { ObjectId } = require('mongoose').Types
+const User = require('../models/user');
+const { ObjectId } = require('mongoose').Types;
 
 /**
  * Finds a user in the database based on a given condition.
@@ -8,21 +8,43 @@ const { ObjectId } = require('mongoose').Types
  * @returns {Promise<object>} - A Promise that resolves with the user object if found, otherwise null.
  */
 const findUserByCondition = async (condition) => {
-    const user = await User.find(condition).exec()
-    return user
-}
+  if (ObjectId.isValid(condition)) {
+    const user = await User.findById(condition).exec();
+    return user;
+  }
+  if (typeof condition === 'object' && condition !== null) {
+    const user = await User.findOne(condition)
+    return user;
+  }
+
+  return null;
+};
 
 const insertData = async (condition) => {
-    const user = await User.create({
-        name: condition.name,
-        email: condition.email,
-        password: condition.password,
-    })
+  const user = await User.create({
+    name: condition.name,
+    email: condition.email,
+    password: condition.password,
+    role: condition.role,
+    status: condition.status
+  });
 
-    return user
+  return user
+};
+
+const deleteUser = async (condition) => {
+  const result = await User.deleteOne(condition)
+  return result
+}
+
+const editUser = async (user, newValue) => {
+  const result = await User.updateOne(user, newValue)
+  return result
 }
 
 module.exports = {
-    findUserByCondition,
-    insertData
-}
+  findUserByCondition,
+  insertData,
+  deleteUser,
+  editUser
+};
