@@ -8,7 +8,8 @@ const generateAccessToken = async (email, userId, role) => {
   const accessToken = await jwt.sign({ email, userId, role }, process.env.JWT_SECRET_KEY, {
     expiresIn: process.env.JWT_EXPIRES_TIME,
   });
-  return accessToken;
+  const {exp: expiresIn} = await jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
+  return {token: accessToken, expiresIn: expiresIn};
 };
 
 const verifyAccessToken = async (accessToken) => {
@@ -30,8 +31,8 @@ const login = async (email, password) => {
   let response = {}
   const userId = user._id.toString()
   const role = user.role
-  const token = await generateAccessToken(email, userId, role)
-  response = {user: user, token: token}
+  const jsonToken = await generateAccessToken(email, userId, role)
+  response = {user: user, jsonToken: jsonToken}
   return response
 };
 
@@ -44,8 +45,8 @@ const register = async (name, email, password, role) => {
   const newUser = await userDao.insertData({ name, email, password, role, status: constants.IS_ACTIVE });
 
   const userId = newUser._id.toString()
-  const token = await generateAccessToken(email, userId, role);
-  response = {user: newUser, token:token}
+  const jsonToken = await generateAccessToken(email, userId, role);
+  response = {user: newUser, jsonToken: jsonToken}
   return response;
 };
 
