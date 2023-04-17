@@ -25,12 +25,26 @@ const insertData = async (condition) => {
     name: condition.name,
     email: condition.email,
     password: condition.password,
+    role: condition.role,
+    status: condition.status
   });
 
   return user
 };
 
+const deleteUser = async (condition) => {
+  const result = await User.deleteOne(condition)
+  return result
+}
+
+const editUser = async (user, newValue) => {
+  const result = await User.updateOne(user, newValue)
+  return result
+}
+
 module.exports = {
   findUserByCondition,
   insertData,
+  deleteUser,
+  editUser
 };

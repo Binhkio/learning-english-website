@@ -63,7 +63,7 @@ const encryptPassword = async (password, salt) => {
 
   // Encrypt the resulting bcrypt hash with AES256
   const encryptAES256 = encrypt(hashedBcrypt);
-  console.log(encryptAES256)
+  // console.log(encryptAES256)
 
   const encryptedPassword = encryptAES256;
   return encryptedPassword;
