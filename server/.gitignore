@@ -63,3 +63,4 @@ typings/
 ./toto.txt
 
 package-lock.json
+yarn.lock

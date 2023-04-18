@@ -8,7 +8,7 @@ require('dotenv').config()
 const app = require('../app');
 const debug = require('debug')('server:server');
 const http = require('http');
-const connectDatabase = require('../models');
+const connectDatabase = require('../database');
 
 /**
  * Get port from environment and store in Express.

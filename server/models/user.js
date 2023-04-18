@@ -5,8 +5,9 @@ const User = mongoose.Schema(
     email: String,
     name: String,
     password: String,
-    role: Boolean,
+    role: Number,
     quizzes: Array,
+    status: Number
   },
   {
     timestamps: true,

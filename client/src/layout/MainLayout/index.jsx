@@ -15,6 +15,11 @@ import { SET_MENU } from 'store/actions';
 
 // assets
 import { IconChevronRight } from '@tabler/icons';
+import { useLayoutEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import token from 'utils/token';
+import _ from 'lodash'
+import { useEffect } from 'react';
 
 // styles
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
@@ -60,9 +65,9 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
     })
 }));
 
-// ==============================|| MAIN LAYOUT ||============================== //
 
 const MainLayout = () => {
+    const navigate = useNavigate()
     const theme = useTheme();
     const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
     // Handle left drawer
@@ -71,6 +76,11 @@ const MainLayout = () => {
     const handleLeftDrawerToggle = () => {
         dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
     };
+
+    useEffect(() => {
+        const userToken = token.getSessionStorage()
+        if (_.isNil(userToken)) navigate('/auth/login')
+    }, [])
 
     return (
         <Box sx={{ display: 'flex' }}>
