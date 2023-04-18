@@ -8,7 +8,7 @@ const { ObjectId } = require('mongoose').Types;
  * @returns {Promise<object>} - A Promise that resolves with the question object if found, otherwise null.
  */
 
-const findQuizByCondition = async (condition) => {
+const findQuestionByCondition = async (condition) => {
   if (ObjectId.isValid(condition)) {
     const question = await Question.findById(condition).exec();
     return question;
@@ -42,7 +42,7 @@ const editQuestion = async (question, newValue) => {
 }
 
 module.exports = {
-  findQuizByCondition,
+  findQuestionByCondition,
   insertData,
   deleteQuestion,
   editQuestion,
