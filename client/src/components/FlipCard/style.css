@@ -1,0 +1,65 @@
+.scene {
+    display: inline-block;
+    perspective: 600px;
+}
+  
+.card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transform-origin: center right;
+    transition: transform 0.4s;
+}
+  
+.card.is-flipped {
+    transform: rotateX(-180deg);
+}
+  
+.card__face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    backface-visibility: hidden;
+    background-color: #2e3856;
+    color: #f6f7fb;
+}
+
+.click-field img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 12px;
+}
+
+.click-field {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.content-field {
+    font-size: 28px;
+    padding: 50px 20px;
+    border-radius: 8px;
+}
+
+.learned-mark {
+    position: absolute;
+    top: 4px;
+    right: 10px;
+    z-index: 10;
+}
+  
+.card__face--front {
+}
+  
+.card__face--back {
+    transform: rotateY(180deg) rotateZ(180deg);
+}
+  
