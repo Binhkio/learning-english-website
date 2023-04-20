@@ -7,13 +7,8 @@ const constants = require('../utils/constants')
 
 const authenticateAdmin = async (request, response, next) => {
   const header = request.headers['authorization'];
-  const headerSplit = header.split(' ');
 
-  // check is auth
-  if (_.isNil(header) || headerSplit[0] !== 'Bearer')
-    return response.send(helper.convertApi(response, httpCode.UNAUTHORIZED, ''));
-
-  const token = headerSplit[1]; // get token
+  const token = header; // get token
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);

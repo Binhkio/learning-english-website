@@ -13,8 +13,7 @@ const getSessionStorage = () => {
     return null;
   }
   if (new Date() > new Date(expirationDate)) {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('expirationDate');
+    removeSessionStorage()
     return null;
   }
   return {
@@ -23,9 +22,15 @@ const getSessionStorage = () => {
   };
 };
 
+const removeSessionStorage = () => {
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('expirationDate');
+}
+
 const token = {
   setSessionStorage,
-  getSessionStorage
+  getSessionStorage,
+  removeSessionStorage
 };
 
 export default token;

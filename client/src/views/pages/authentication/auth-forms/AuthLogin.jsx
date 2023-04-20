@@ -24,6 +24,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import api from 'api';
 import token from 'utils/token';
 import { useNavigate } from 'react-router-dom';
+import user from 'utils/user';
 
 const LoginForm = ({ ...others }) => {
   const theme = useTheme();
@@ -67,6 +68,7 @@ const LoginForm = ({ ...others }) => {
       .then((response) => {
         const payload = response.data.data;
         token.setSessionStorage(payload.jsonToken);
+        user.setSessionStorage(payload.user)
         setStatus({ success: true });
         setSubmitting(false);
         setNotificationState({ ...notificationState, isLogin: true });
