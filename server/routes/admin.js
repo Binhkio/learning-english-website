@@ -7,7 +7,7 @@ const { adminValidation } = require('../validations/admin')
 
 
 Router.get('/get-list-user', auth.authenticateAdmin, adminController.getListUser);
-Router.delete('/delete-user', auth.authenticateAdmin, validationMiddleware(adminValidation.userRequest()), adminController.deleteUser)
+Router.delete('/delete-user', auth.authenticateAdmin, adminController.deleteUser)
 Router.put('/edit', auth.authenticateAdmin, validationMiddleware(adminValidation.userEditRequest()), adminController.editStatusUser)
 
 module.exports = Router

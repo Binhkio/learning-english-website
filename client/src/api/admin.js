@@ -16,8 +16,22 @@ const getListUser = () => {
     return axiosInstance.get(getListUserUrl)
 }
 
+const editUserData = (payload) => {
+    const editUserDataUrl = `${AUTH_URL}/edit`
+    return axiosInstance.put(editUserDataUrl, payload)
+}
+
+const deleteUser = (payload) => {
+    const deleteUserUrl = `${AUTH_URL}/delete-user`
+    return axiosInstance.delete(deleteUserUrl, {
+        params: payload
+    })
+}
+
 const adminApi = {
-    getListUser
+    getListUser,
+    editUserData,
+    deleteUser
 }
 
 export default adminApi

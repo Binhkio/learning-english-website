@@ -2,8 +2,8 @@ import { Typography } from '@mui/material';
 import NavGroup from './NavGroup';
 import menuItem from 'menu-items';
 import userUtils from 'utils/user';
-// import { useEffect } from 'react';
 import { useState } from 'react';
+import _ from 'lodash'
 
 const MenuList = () => {
   const [user, setUser] = useState(userUtils.getSessionStorage());
@@ -11,7 +11,7 @@ const MenuList = () => {
   const navItems = menuItem.items.map((item) => {
     switch (item.type) {
       case 'group':
-        if (user.role === 1) {
+        if (user.role === 1 && !_.isNil(user)) {
           return (
             <NavGroup
               key={item.id}

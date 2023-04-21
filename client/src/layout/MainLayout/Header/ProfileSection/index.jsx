@@ -8,7 +8,6 @@ import {
   Chip,
   ClickAwayListener,
   Divider,
-  Grid,
   List,
   ListItemButton,
   ListItemIcon,
@@ -19,11 +18,12 @@ import {
   Typography,
 } from '@mui/material';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { IconLogout, IconSettings, IconUser } from '@tabler/icons';
+import { IconLogout, IconSettings } from '@tabler/icons';
 import MainCard from '../../../../ui-component/cards/MainCard';
 import Transitions from '../../../../ui-component/extended/Transitions';
 import User1 from '../../../../assets/images/users/user-round.svg';
 import token from 'utils/token';
+import userUtils from 'utils/user';
 
 function ProfileSection() {
   const theme = useTheme();
@@ -34,6 +34,7 @@ function ProfileSection() {
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
+  const [userData, setUserData] = useState(userUtils.getSessionStorage())
 
   const anchorRef = useRef(null);
   const prevOpen = useRef(open);
@@ -164,10 +165,10 @@ function ProfileSection() {
                           component="span"
                           variant="h4"
                           sx={{ fontWeight: 400 }}>
-                          Johne Doe
+                          { userData.name }
                         </Typography>
                       </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
+                      <Typography variant="subtitle2">{ userData.role === 0 ? 'User' : 'Admin' }</Typography>
                     </Stack>
                     <Divider />
                   </Box>
@@ -209,42 +210,6 @@ function ProfileSection() {
                             primary={<Typography variant="body2">Account Settings</Typography>}
                           />
                         </ListItemButton>
-                        <ListItemButton
-                          sx={{ borderRadius: `${customization.borderRadius}px` }}
-                          selected={selectedIndex === 1}
-                          onClick={(event) =>
-                            handleListItemClick(event, 1, '/user/social-profile/posts')
-                          }>
-                          <ListItemIcon>
-                            <IconUser
-                              stroke={1.5}
-                              size="1.3rem"
-                            />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Grid
-                                container
-                                spacing={1}
-                                justifyContent="space-between">
-                                <Grid item>
-                                  <Typography variant="body2">Social Profile</Typography>
-                                </Grid>
-                                <Grid item>
-                                  <Chip
-                                    label="02"
-                                    size="small"
-                                    sx={{
-                                      bgcolor: theme.palette.warning.dark,
-                                      color: theme.palette.background.default,
-                                    }}
-                                  />
-                                </Grid>
-                              </Grid>
-                            }
-                          />
-                        </ListItemButton>
-
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 4}
