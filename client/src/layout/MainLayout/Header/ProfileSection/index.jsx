@@ -198,7 +198,7 @@ function ProfileSection() {
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 0}
                           onClick={(event) =>
-                            handleListItemClick(event, 0, '/user/account-profile/profile1')
+                            handleListItemClick(event, 0, '/user/edit')
                           }>
                           <ListItemIcon>
                             <IconSettings

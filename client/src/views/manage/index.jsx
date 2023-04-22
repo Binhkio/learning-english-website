@@ -10,7 +10,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { useEffect } from 'react';
 import api from 'api';
 import { useState } from 'react';
-import { FormControlLabel, Snackbar, Switch, Typography } from '@mui/material';
+import { Snackbar, Switch, Typography } from '@mui/material';
 
 function Manage() {
   const [listUser, setListUser] = useState([]);

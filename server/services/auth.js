@@ -53,4 +53,5 @@ const register = async (name, email, password, role) => {
 module.exports = {
   login,
   register,
+  generateAccessToken,
 };
