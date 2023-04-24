@@ -7,6 +7,7 @@ import Loadable from 'ui-component/Loadable';
 // sample page routing
 const Learning = Loadable(lazy(() => import('views/learning')));
 const Manage = Loadable(lazy(() => import('views/manage')));
+const QuizManage = Loadable(lazy(() => import('views/quiz-manage')));
 const EditUser = Loadable(lazy(() => import('views/user-edit')));
 
 const MainRoutes = {
@@ -20,6 +21,10 @@ const MainRoutes = {
         {
             path: '/manage/user',
             element: <Manage />
+        },
+        {
+            path: '/manage/quiz',
+            element: <QuizManage />
         },
         {
             path: '/user/edit',
