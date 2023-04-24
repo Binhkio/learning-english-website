@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -8,7 +7,6 @@ import {
     Box,
     Button,
     Checkbox,
-    Divider,
     FormControl,
     FormControlLabel,
     FormHelperText,
@@ -36,7 +34,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import api from 'api';
 
-const FirebaseRegister = ({ ...others }) => {
+const RegisterForm = ({ ...others }) => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const [showPassword, setShowPassword] = useState(false);
@@ -74,14 +72,10 @@ const FirebaseRegister = ({ ...others }) => {
         setLevel(strengthColor(temp));
     };
 
-    useEffect(() => {
-        changePassword('123456');
-    }, []);
-
     const initValues = () => {
         return {
-            fname: 'a',
-            lname: 'a',
+            fname: 'john',
+            lname: 'smith',
             email: 'info@codedthemes.com',
             password: '123456',
             submit: null,
@@ -104,20 +98,20 @@ const FirebaseRegister = ({ ...others }) => {
             password: values.password
         };
         console.log('register', payload);
-        // await api.authApi
-        //   .register(payload)
-        //   .then((response) => {
-        //     const payload = response.data.data;
-        //     setStatus({ success: true });
-        //     setSubmitting(false);
-        //     setNotificationState({ ...notificationState, isRegister: true });
-        //     navigate('/auth/login')
-        //   })
-        //   .catch((error) => {
-        //     setStatus({ success: false });
-        //     setErrors({ submit: error.message });
-        //     setSubmitting(false);
-        //   });
+        await api.authApi
+          .register(payload)
+          .then((response) => {
+            const payload = response.data.data;
+            setStatus({ success: true });
+            setSubmitting(false);
+            setNotificationState({ ...notificationState, isRegister: true });
+            // navigate('/auth/login')
+          })
+          .catch((error) => {
+            setStatus({ success: false });
+            setErrors({ submit: error.message });
+            setSubmitting(false);
+          });
       };
 
     return (
@@ -137,10 +131,8 @@ const FirebaseRegister = ({ ...others }) => {
                                     label="First Name"
                                     margin="normal"
                                     name="fname"
-                                    value={values.fname}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
                                     type="text"
+                                    defaultValue=""
                                     sx={{ ...theme.typography.customInput }}
                                 />
                             </Grid>
@@ -150,16 +142,14 @@ const FirebaseRegister = ({ ...others }) => {
                                     label="Last Name"
                                     margin="normal"
                                     name="lname"
-                                    value={values.lname}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
                                     type="text"
+                                    defaultValue=""
                                     sx={{ ...theme.typography.customInput }}
                                 />
                             </Grid>
                         </Grid>
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-register">Email Address / Username</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-email-register">Email Address</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-email-register"
                                 type="email"
@@ -293,4 +283,4 @@ const FirebaseRegister = ({ ...others }) => {
     );
 };
 
-export default FirebaseRegister;
+export default RegisterForm;
