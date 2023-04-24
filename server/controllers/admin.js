@@ -8,7 +8,7 @@ const getListUser = async (request, response) => {
 }
 
 const deleteUser = async (request, response) => {
-    const { _id } = request.body
+    const { _id } = request.query
     const payload = await adminService.deleteUser(_id)
     return response.send(helper.convertApi(payload, httpCode.SUCCESS, ''))
 }

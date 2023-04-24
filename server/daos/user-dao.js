@@ -12,6 +12,7 @@ const findUserByCondition = async (condition) => {
     const user = await User.findById(condition).exec();
     return user;
   }
+
   if (typeof condition === 'object' && condition !== null) {
     const user = await User.findOne(condition)
     return user;
@@ -19,6 +20,20 @@ const findUserByCondition = async (condition) => {
 
   return null;
 };
+
+const listUserByCondition = async (condition) => {
+  if (ObjectId.isValid(condition)) {
+    const user = await User.findById(condition).exec();
+    return user;
+  }
+
+  if (typeof condition === 'object' && condition !== null) {
+    const user = await User.find(condition)
+    return user;
+  }
+
+  return null;
+}
 
 const insertData = async (condition) => {
   const user = await User.create({
@@ -42,9 +57,20 @@ const editUser = async (user, newValue) => {
   return result
 }
 
+const addLessonToUser = async (_id, ids) => {
+  let user
+  if (ObjectId.isValid(_id)) {
+    user = await User.findById(_id).exec();
+  }
+  const result = await User.updateOne(user, {lessons: ids})
+  return result
+}
+
 module.exports = {
   findUserByCondition,
   insertData,
   deleteUser,
-  editUser
+  editUser,
+  listUserByCondition,
+  addLessonToUser
 };

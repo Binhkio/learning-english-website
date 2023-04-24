@@ -1,9 +1,9 @@
-const userDao = require('../daos/userDao')
+const userDao = require('../daos/user-dao')
 const constants = require('../utils/constants')
 const _ = require('lodash')
 
 const getAllUser = async () => {
-    const listUsers = await userDao.findUserByCondition({ role: constants.USER })
+    const listUsers = await userDao.listUserByCondition({ role: constants.USER })
     if (_.isNil(listUsers)) return { message: 'Please create new user' }
     return listUsers
 }
