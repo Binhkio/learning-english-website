@@ -6,6 +6,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import PersonIcon from '@mui/icons-material/Person';
 import EditIcon from '@mui/icons-material/Edit';
 import UserInformationComponent from './user-information';
+import ChangePasswordComponent from './change-password'
 
 function UserEdit() {
   const [value, setValue] = useState('1');
@@ -38,7 +39,9 @@ function UserEdit() {
           <TabPanel value="1">
             <UserInformationComponent />
           </TabPanel>
-          <TabPanel value="2">Item Two</TabPanel>
+          <TabPanel value="2">
+            <ChangePasswordComponent />
+          </TabPanel>
         </TabContext>
       </Box>
     </MainCard>

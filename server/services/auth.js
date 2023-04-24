@@ -1,4 +1,4 @@
-const userDao = require('../daos/userDao');
+const userDao = require('../daos/user-dao');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const constants = require('../utils/constants');

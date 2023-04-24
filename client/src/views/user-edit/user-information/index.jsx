@@ -110,7 +110,6 @@ export default function UserInformationForm({ ...other }) {
   };
 
   const handleEdit = async (values, { setErrors, setStatus, setSubmitting }) => {
-    console.log(editText === CUSTOME_TEXT.SAVE);
     if (editText === CUSTOME_TEXT.SAVE) {
       await handleSubmitForm(values, { setErrors, setStatus, setSubmitting });
     } else {
@@ -122,7 +121,7 @@ export default function UserInformationForm({ ...other }) {
     <>
       <Box sx={{ padding: 5 }}>
         <Typography
-          variant="h6"
+          variant="h3"
           gutterBottom
           sx={{ paddingBottom: 5, textAlign: 'center' }}>
           User Information

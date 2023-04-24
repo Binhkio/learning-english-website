@@ -57,10 +57,20 @@ const editUser = async (user, newValue) => {
   return result
 }
 
+const addLessonToUser = async (_id, ids) => {
+  let user
+  if (ObjectId.isValid(_id)) {
+    user = await User.findById(_id).exec();
+  }
+  const result = await User.updateOne(user, {lessons: ids})
+  return result
+}
+
 module.exports = {
   findUserByCondition,
   insertData,
   deleteUser,
   editUser,
-  listUserByCondition
+  listUserByCondition,
+  addLessonToUser
 };

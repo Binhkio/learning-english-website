@@ -1,4 +1,4 @@
-const userDao = require('../daos/userDao')
+const userDao = require('../daos/user-dao')
 const _ = require('lodash')
 const authSecurity = require('./auth')
 

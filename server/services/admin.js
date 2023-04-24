@@ -1,4 +1,4 @@
-const userDao = require('../daos/userDao')
+const userDao = require('../daos/user-dao')
 const constants = require('../utils/constants')
 const _ = require('lodash')
 
