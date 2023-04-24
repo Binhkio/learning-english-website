@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // material-ui
@@ -17,6 +17,7 @@ import {
     InputAdornment,
     InputLabel,
     OutlinedInput,
+    Snackbar,
     TextField,
     Typography,
     useMediaQuery
@@ -27,30 +28,38 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
-import useScriptRef from 'hooks/useScriptRef';
-import Google from 'assets/images/icons/social-google.svg';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import api from 'api';
 
 const FirebaseRegister = ({ ...others }) => {
     const theme = useTheme();
-    const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-    const customization = useSelector((state) => state.customization);
     const [showPassword, setShowPassword] = useState(false);
     const [checked, setChecked] = useState(true);
+
+    const [notificationState, setNotificationState] = useState({
+        isRegister: false,
+        vertical: 'top',
+        horizontal: 'right',
+    });
+    
+    const { isRegister, vertical, horizontal } = notificationState;
+    
 
     const [strength, setStrength] = useState(0);
     const [level, setLevel] = useState();
 
-    const googleHandler = async () => {
-        console.error('Register');
-    };
+    const navigate = useNavigate()
 
+    const handleCloseNotification = () => {
+        setNotificationState({ ...notificationState, isRegister: false });
+    };
+    
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -69,34 +78,55 @@ const FirebaseRegister = ({ ...others }) => {
         changePassword('123456');
     }, []);
 
+    const initValues = () => {
+        return {
+            fname: 'a',
+            lname: 'a',
+            email: 'info@codedthemes.com',
+            password: '123456',
+            submit: null,
+        };
+    };
+
+    const validateRule = () => {
+        return Yup.object().shape({
+            fname: Yup.string().max(255).required('First name is required'),
+            lname: Yup.string().max(255).required('Last name is required'),
+            email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+            password: Yup.string().min(8).max(255).required('Password is required'),
+        });
+    };
+
+    const handleSubmitForm = async (values, { setErrors, setStatus, setSubmitting }) => {
+        const payload = {
+            name: `${values.lname} ${values.fname}`,
+            email: values.email,
+            password: values.password
+        };
+        console.log('register', payload);
+        // await api.authApi
+        //   .register(payload)
+        //   .then((response) => {
+        //     const payload = response.data.data;
+        //     setStatus({ success: true });
+        //     setSubmitting(false);
+        //     setNotificationState({ ...notificationState, isRegister: true });
+        //     navigate('/auth/login')
+        //   })
+        //   .catch((error) => {
+        //     setStatus({ success: false });
+        //     setErrors({ submit: error.message });
+        //     setSubmitting(false);
+        //   });
+      };
+
     return (
         <>
             <Grid container direction="column" justifyContent="center" spacing={2}></Grid>
             <Formik
-                initialValues={{
-                    email: '',
-                    password: '',
-                    submit: null
-                }}
-                validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
-                })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    try {
-                        if (scriptedRef.current) {
-                            setStatus({ success: true });
-                            setSubmitting(false);
-                        }
-                    } catch (err) {
-                        console.error(err);
-                        if (scriptedRef.current) {
-                            setStatus({ success: false });
-                            setErrors({ submit: err.message });
-                            setSubmitting(false);
-                        }
-                    }
-                }}
+                initialValues={initValues}
+                validationSchema={validateRule}
+                onSubmit={handleSubmitForm}
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
@@ -107,8 +137,10 @@ const FirebaseRegister = ({ ...others }) => {
                                     label="First Name"
                                     margin="normal"
                                     name="fname"
+                                    value={values.fname}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
                                     type="text"
-                                    defaultValue=""
                                     sx={{ ...theme.typography.customInput }}
                                 />
                             </Grid>
@@ -118,8 +150,10 @@ const FirebaseRegister = ({ ...others }) => {
                                     label="Last Name"
                                     margin="normal"
                                     name="lname"
+                                    value={values.lname}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
                                     type="text"
-                                    defaultValue=""
                                     sx={{ ...theme.typography.customInput }}
                                 />
                             </Grid>
@@ -244,6 +278,14 @@ const FirebaseRegister = ({ ...others }) => {
                                 </Button>
                             </AnimateButton>
                         </Box>
+
+                        <Snackbar
+                            anchorOrigin={{ vertical, horizontal }}
+                            open={isRegister}
+                            onClose={handleCloseNotification}
+                            message="Register success"
+                            key={vertical + horizontal}
+                        />
                     </form>
                 )}
             </Formik>
