@@ -9,9 +9,9 @@ const userEditRequest = () => [
   check('data', 'Updated data is invalid').not().isEmpty(),
 ]
 
-const adminValidation = {
+const userValidation = {
   userRequest: userRequest,
   userEditRequest: userEditRequest
 }
 
-module.exports = { adminValidation };
+module.exports = { userValidation };

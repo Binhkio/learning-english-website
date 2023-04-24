@@ -25,7 +25,7 @@ const insertData = async (condition) => {
   const quiz = await Quiz.create({
     name: condition.name,
     creator: condition.creator,
-    questions: condition.questions,
+    lessons: condition.lessons,
     status: condition.status,
   });
 
