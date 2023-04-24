@@ -60,8 +60,6 @@ const RegisterForm = ({ ...others }) => {
     await api.authApi
     .register(payload)
     .then((response) => {
-        const payload = response.data.data;
-        console.log(payload);
         setStatus({ success: true });
         setSubmitting(false);
         setNotificationState({ ...notificationState, isLogin: true });
