@@ -8,6 +8,7 @@ import { Formik } from 'formik';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Stack } from '@mui/system';
 import { useState } from 'react';
+import _ from 'lodash';
 
 const style = {
   position: 'absolute',
@@ -47,6 +48,17 @@ export default function CreateQuizModalButton() {
       name: '',
     }])
   }
+  const handleAddLessonName = (e, index) => {
+    setLessons(lessons.map((lesson, idx) => {
+      if(idx === index){
+        return {
+          ...lesson,
+          name: e.target.value,
+        }
+      }
+      return lesson
+    }))
+  }
 
   const handleUpdateImage = (index, files) => {
     if (!files || files.length === 0) {
@@ -72,21 +84,37 @@ export default function CreateQuizModalButton() {
   };
 
   const handleSubmitForm = async (values, { setErrors, setStatus, setSubmitting }) => {
-    const payload = { name: values.quizname, lessons: lessons };
-    console.log(payload);
-    // await api.authApi
-    //   .login(payload)
-    //   .then((response) => {
-    //     const payload = response.data.data;
-    //     setStatus({ success: true });
-    //     setSubmitting(false);
-    //     setNotificationState({ ...notificationState, isLogin: true });
-    //   })
-    //   .catch((error) => {
-    //     setStatus({ success: false });
-    //     setErrors({ submit: error.message });
-    //     setSubmitting(false);
-    //   });
+    const verifyLessonsPromise = lessons.filter((lesson) => {
+      return !_.isNil(lesson) && _.keys(lesson).length === 2 && !!lesson.name
+    }).map(async (lesson) => {
+      const downloadUrl = await api.firebaseApi.uploadImage(lesson.image)
+      return {
+        ...lesson,
+        image: downloadUrl,
+      }
+    })
+    const verifyLessons = await Promise.all(verifyLessonsPromise)
+    const payload = {
+      _id: JSON.parse(sessionStorage.getItem('userData'))._id,
+      data: {
+        name: values.quizname,
+        lessons: verifyLessons,
+      }
+    };
+    await api.quizApi
+      .createQuiz(payload)
+      .then((response) => {
+        const payload = response.data;
+        console.log(payload);
+        setStatus({ success: true });
+        setSubmitting(false);
+        setNotificationState({ ...notificationState, isLogin: true });
+      })
+      .catch((error) => {
+        setStatus({ success: false });
+        setErrors({ submit: error.message });
+        setSubmitting(false);
+      });
   };
 
   const validateRule = () => {
@@ -146,7 +174,7 @@ export default function CreateQuizModalButton() {
                   <Box key={index} sx={{marginY:'12px', padding:'8px', backgroundColor:'#f8f8f8'}}>
                     <span>{index+1}. </span>
                     <Stack direction="row" alignItems="center" justifyContent="space-around">
-                      <TextField label='Name' variant='standard' />
+                      <TextField label='Name' variant='standard' onChange={(e) => {handleAddLessonName(e, index)}} />
                       <Stack direction="row" alignItems="center" justifyContent="right">
                         {lesson?.image && (
                           <div style={{width:'100px', height:'100px'}}>
