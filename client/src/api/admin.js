@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const AUTH_URL = 'http://127.0.0.1:3031/admin';
+const ADMIN_URL = `${process.env.REACT_APP_API_BASE_URL}/admin`;
 
 const axiosInstance = axios.create({
-    baseURL: AUTH_URL,
+    baseURL: ADMIN_URL,
     headers: {
         'authorization': sessionStorage.getItem('token'),
         'Accept' : 'application/json',
@@ -12,17 +12,17 @@ const axiosInstance = axios.create({
 })
 
 const getListUser = () => {
-    const getListUserUrl = `${AUTH_URL}/get-list-user`
+    const getListUserUrl = `${ADMIN_URL}/get-list-user`
     return axiosInstance.get(getListUserUrl)
 }
 
 const editUserData = (payload) => {
-    const editUserDataUrl = `${AUTH_URL}/edit`
+    const editUserDataUrl = `${ADMIN_URL}/edit`
     return axiosInstance.put(editUserDataUrl, payload)
 }
 
 const deleteUser = (payload) => {
-    const deleteUserUrl = `${AUTH_URL}/delete-user`
+    const deleteUserUrl = `${ADMIN_URL}/delete-user`
     return axiosInstance.delete(deleteUserUrl, {
         params: payload
     })

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const AUTH_URL = 'http://127.0.0.1:3031/auth';
+const AUTH_URL = `${process.env.REACT_APP_API_BASE_URL}/auth`
 
 const axiosInstance = axios.create({
   baseURL: AUTH_URL,

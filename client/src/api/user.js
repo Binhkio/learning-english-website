@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const AUTH_URL = 'http://127.0.0.1:3031/user';
+const USER_URL = `${process.env.REACT_APP_API_BASE_URL}/user`;
 
 const axiosInstance = axios.create({
-  baseURL: AUTH_URL,
+  baseURL: USER_URL,
   headers: {
     authorization: sessionStorage.getItem('token'),
     Accept: 'application/json',
@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 });
 
 const getCurrentUser = (payload) => {
-  const getCurrentUserUrl = `${AUTH_URL}/user-data`;
+  const getCurrentUserUrl = `${USER_URL}/user-data`;
   return axiosInstance.post(getCurrentUserUrl, payload);
 };
 

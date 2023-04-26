@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const AUTH_URL = 'http://127.0.0.1:3031/quiz';
+const QUIZ_URL = process.env.REACT_APP_API_BASE_URL + `/quiz`;
 
 const axiosInstance = axios.create({
-    baseURL: AUTH_URL,
+    baseURL: QUIZ_URL,
     headers: {
         'authorization': sessionStorage.getItem('token'),
         'Accept' : 'application/json',
@@ -12,27 +12,27 @@ const axiosInstance = axios.create({
 })
 
 const createQuiz = (payload) => {
-    const getLessonInfoUrl = `${AUTH_URL}/create`
+    const getLessonInfoUrl = `${QUIZ_URL}/create`
     return axiosInstance.post(getLessonInfoUrl, payload)
 }
 
 const updateQuiz = (payload) => {
-    const getLessonInfoUrl = `${AUTH_URL}/update`
+    const getLessonInfoUrl = `${QUIZ_URL}/update`
     return axiosInstance.post(getLessonInfoUrl, payload)
 }
 
 const getAllQuizzes = () => {
-    const getAllQuizzesUrl = `${AUTH_URL}/get-all`
+    const getAllQuizzesUrl = `${QUIZ_URL}/get-all`
     return axiosInstance.get(getAllQuizzesUrl)
 }
 
 const getQuizInfo = (payload) => {
-    const getQuizInfoUrl = `${AUTH_URL}/get-info`
+    const getQuizInfoUrl = `${QUIZ_URL}/get-info`
     return axiosInstance.post(getQuizInfoUrl, payload)
 }
 
 const deleteQuiz = (payload) => {
-    const deleteQuizUrl = `${AUTH_URL}/delete`
+    const deleteQuizUrl = `${QUIZ_URL}/delete`
     return axiosInstance.post(deleteQuizUrl, payload)
 }
 

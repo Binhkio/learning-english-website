@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const AUTH_URL = 'http://127.0.0.1:3031/lesson';
+const LESSON_URL = `${process.env.REACT_APP_API_BASE_URL}/lesson`;
 
 const axiosInstance = axios.create({
-    baseURL: AUTH_URL,
+    baseURL: LESSON_URL,
     headers: {
         'authorization': sessionStorage.getItem('token'),
         'Accept' : 'application/json',
@@ -12,12 +12,12 @@ const axiosInstance = axios.create({
 })
 
 const getLessonInfor = (payload) => {
-    const getLessonInfoUrl = `${AUTH_URL}/get-info`
+    const getLessonInfoUrl = `${LESSON_URL}/get-info`
     return axiosInstance.post(getLessonInfoUrl, payload)
 }
 
 const deleteLesson = (payload) => {
-    const deleteLessonUrl = `${AUTH_URL}/delete`
+    const deleteLessonUrl = `${LESSON_URL}/delete`
     return axiosInstance.post(deleteLessonUrl, payload)
 }
 

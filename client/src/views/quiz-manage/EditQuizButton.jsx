@@ -37,10 +37,8 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
   useEffect(() => {
     const getQuizInfo = async () => {
       const payload = {_id: quiz_id}
-      console.log(payload);
       api.quizApi.getQuizInfo(payload).then((response) => {
         const data = response.data.data
-        console.log(data);
         setQuizname(data.name)
         setLessons(data.lessons)
       }, (error) => {
@@ -122,12 +120,10 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
       name: quizname,
       lessons: verifyLessons,
     };
-    console.log('updateQuiz', payload);
     await api.quizApi
       .updateQuiz(payload)
       .then((response) => {
         const payload = response.data;
-        console.log(payload);
         handleChangeRow()
         setOpen(false)
         setStatus({ success: true });
