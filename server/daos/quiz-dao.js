@@ -33,13 +33,18 @@ const insertData = async (condition) => {
 }
 
 const deleteQuiz = async (condition) => {
-  const result = await Quiz.deleteOne(condition);
+  const result = await Quiz.findByIdAndDelete(condition);
   return result;
 }
 
-const editQuiz = async (quiz, newValue) => {
-  const result = await Quiz.updateOne(quiz, newValue);
+const editQuiz = async (quiz_id, newValue) => {
+  const result = await Quiz.findByIdAndUpdate(quiz_id, newValue);
   return result;
+}
+
+const getAllQuizzes = async () => {
+  const result = await Quiz.find()
+  return result
 }
 
 module.exports = {
@@ -47,4 +52,5 @@ module.exports = {
   insertData,
   deleteQuiz,
   editQuiz,
+  getAllQuizzes,
 }

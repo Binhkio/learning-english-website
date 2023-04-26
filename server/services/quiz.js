@@ -31,13 +31,88 @@ const createQuiz = async (_id, param) => {
     return insertQuizData
 }
 
+const updateQuiz = async (user_id, _id, name, lessons, status) => {
+    const quiz = await quizDao.findQuizByCondition(_id)
+    if (_.isEmpty(quiz)) return { message: 'Quiz not found. Please create a new one'}
+
+    const newValue = {
+        status: NEW_QUIZ
+    }
+    if(!_.isNil(name)){
+        newValue.name = name
+    }
+    if(!_.isNil(status)){
+        newValue.status = status
+    }
+    if(!_.isNil(lessons)){
+        let promiseInsertLessonData = []
+        lessons.forEach(async (lesson) => {
+            if(_.isNil(lesson)) return;
+            if(!_.isNil(lesson._id)) {
+                promiseInsertLessonData.push(lessonDao.editLesson({_id:lesson._id}, {...lesson, status: NEW_LESSON}))
+            }else{
+                promiseInsertLessonData.push(lessonDao.insertData({...lesson, status: NEW_LESSON}))
+            }
+        })
+        const insertLessonData = await Promise.all(promiseInsertLessonData)
+        newValue.lessons = insertLessonData.map((lesson) => lesson._id.toString())
+    }
+
+    console.log('status', newValue.status);
+    const insertQuizData = await quizDao.editQuiz(_id, {
+        ...newValue,
+        creator: user_id.toString(),
+    })
+
+    return insertQuizData
+}
+
+const getAllQuizzes = async () => {
+    const quizzes = await quizDao.getAllQuizzes()
+    if (_.isEmpty(quizzes)) return { message: 'No quiz availble' }
+    const verifyQuizzesPromise = quizzes.map(async (quiz) => {
+        const lessons = await lessonDao.findLessonByArrayId(quiz.lessons)
+        const creator = await userDao.findUserByCondition(quiz._doc.creator)
+        if (_.isEmpty(lessons)) return {...quiz._doc, lessons: null}
+        return {
+            ...quiz._doc,
+            creator: creator,
+            lessons: lessons,
+        }
+    }).filter(quiz => !_.isNull(quiz.lessons))
+    const verifyQuizzes = await Promise.all(verifyQuizzesPromise)
+    return verifyQuizzes
+}
+
 const getQuiz = async (id) => {
     const quiz = await quizDao.findLessonByArrayId(id)
     if (_.isEmpty(quiz)) return { message: ' Can not find quiz' }
     return quiz
 }
 
+const getOneQuiz = async (id) => {
+    const quiz = await quizDao.findQuizByCondition(id)
+    if (_.isEmpty(quiz)) return { message: ' Can not find quiz' }
+    const lessons = await lessonDao.findLessonByArrayId(quiz.lessons)
+    const creator = await userDao.findUserByCondition(quiz._doc.creator)
+    if (_.isEmpty(lessons)) return {...quiz._doc, lessons: null}
+    return {
+        ...quiz._doc,
+        creator: creator,
+        lessons: lessons,
+    }
+}
+
+const deleteQuiz = async (id) => {
+    const result = await quizDao.deleteQuiz(id)
+    return result
+}
+
 module.exports = {
     createQuiz,
-    getQuiz
+    getQuiz,
+    getAllQuizzes,
+    updateQuiz,
+    deleteQuiz,
+    getOneQuiz,
 }

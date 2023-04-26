@@ -1,13 +1,13 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { AddOutlined, DeleteOutline, ImageOutlined } from '@mui/icons-material';
+import { AddOutlined, DeleteOutline, EditOutlined, ImageOutlined } from '@mui/icons-material';
 import { Button, FormControl, FormHelperText, IconButton, InputLabel, OutlinedInput, Snackbar, TextField, Typography, useTheme } from '@mui/material';
 import api from 'api';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Stack } from '@mui/system';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import _ from 'lodash';
 
 const style = {
@@ -23,20 +23,36 @@ const style = {
   p: 4,
 };
 
-export default function CreateQuizModalButton({handleChangeRow}) {
+export default function EditQuizButton({quiz_id, default_name, default_lessons, handleChangeRow}) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [lessons, setLessons] = useState([])
+  const [quizname, setQuizname] = useState(default_name)
+  const [lessons, setLessons] = useState(default_lessons)
   const [notificationState, setNotificationState] = useState({
     isLogin: false,
     vertical: 'top',
     horizontal: 'right',
   });
+
+  useEffect(() => {
+    const getQuizInfo = async () => {
+      const payload = {_id: quiz_id}
+      console.log(payload);
+      api.quizApi.getQuizInfo(payload).then((response) => {
+        const data = response.data.data
+        console.log(data);
+        setQuizname(data.name)
+        setLessons(data.lessons)
+      }, (error) => {
+        console.log(error);
+      })
+    }
+
+    getQuizInfo()
+  }, [])
+
   const handleOpen = () => {
     setOpen(true)
-    setLessons([{
-      name: ''
-    }])
   };
   const handleClose = () => setOpen(false);
   const handleCloseNotification = () => {
@@ -74,23 +90,25 @@ export default function CreateQuizModalButton({handleChangeRow}) {
       return val
     }))
   }
-
+  
   const handleRemoveLesson = (idx) => {
     setLessons(lessons.filter((lesson, index) => index !== idx))
   }
 
   const { isLogin, vertical, horizontal } = notificationState;
+
   const initValues = () => {
     return {
-      quizname: 'abc',
+      quizname: default_name,
       submit: null,
     };
   };
 
   const handleSubmitForm = async (values, { setErrors, setStatus, setSubmitting }) => {
     const verifyLessonsPromise = lessons.filter((lesson) => {
-      return !_.isNil(lesson) && _.keys(lesson).length === 2 && !!lesson.name
+      return !_.isNil(lesson) && _.keys(lesson).length >= 2 && !!lesson.name
     }).map(async (lesson) => {
+      if(!_.isNil(lesson._id)) return lesson
       const downloadUrl = await api.firebaseApi.uploadImage(lesson.image)
       return {
         ...lesson,
@@ -99,14 +117,14 @@ export default function CreateQuizModalButton({handleChangeRow}) {
     })
     const verifyLessons = await Promise.all(verifyLessonsPromise)
     const payload = {
-      _id: JSON.parse(sessionStorage.getItem('userData'))._id,
-      data: {
-        name: values.quizname,
-        lessons: verifyLessons,
-      }
+      user_id: JSON.parse(sessionStorage.getItem('userData'))._id,
+      _id: quiz_id,
+      name: quizname,
+      lessons: verifyLessons,
     };
+    console.log('updateQuiz', payload);
     await api.quizApi
-      .createQuiz(payload)
+      .updateQuiz(payload)
       .then((response) => {
         const payload = response.data;
         console.log(payload);
@@ -131,9 +149,9 @@ export default function CreateQuizModalButton({handleChangeRow}) {
 
   return (
     <div>
-      <Button variant='outlined' startIcon={<AddOutlined />} onClick={handleOpen}>
-        Create
-      </Button>
+      <IconButton onClick={handleOpen}>
+        <EditOutlined/>
+      </IconButton>
       <Modal
         open={open}
         onClose={handleClose}
@@ -144,7 +162,7 @@ export default function CreateQuizModalButton({handleChangeRow}) {
           <Typography padding='8px' variant='h3'>Thêm bài học</Typography>
           <Formik
             initialValues={initValues}
-            validationSchema={validateRule}
+            // validationSchema={validateRule}
             onSubmit={handleSubmitForm}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
               <form
@@ -160,10 +178,10 @@ export default function CreateQuizModalButton({handleChangeRow}) {
                   <OutlinedInput
                     id="outlined-adornment-quizname-quiz"
                     type="text"
-                    value={values.quizname||""}
+                    value={quizname||""}
                     name="quizname"
                     onBlur={handleBlur}
-                    onChange={handleChange}
+                    onChange={(e) => {setQuizname(e.target.value)}}
                     label="Quiz name"
                     inputProps={{}}
                   />
@@ -177,24 +195,17 @@ export default function CreateQuizModalButton({handleChangeRow}) {
                 </FormControl>
 
                 {lessons && lessons.map((lesson, index) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      marginY:'12px',
-                      padding:'8px',
-                      backgroundColor:'#f8f8f8',
-                    }}
-                  >
+                  <Box key={index} sx={{marginY:'12px', padding:'8px', backgroundColor:'#f8f8f8'}}>
                     <span>{index+1}. </span>
                     <Stack direction="row" alignItems="center" justifyContent="space-around">
-                      <TextField label='Name' variant='standard' onChange={(e) => {handleAddLessonName(e, index)}} />
+                      <TextField label='Name' variant='standard' defaultValue={lesson.name} onChange={(e) => {handleAddLessonName(e, index)}} />
                       <Stack direction="row" alignItems="center" justifyContent="right">
                         {lesson?.image && (
                           <div style={{width:'100px', height:'100px'}}>
                             <img
                               style={{width:'100%', height:'100%', objectFit:'contain' }}
                               alt={`number-${index+1}`}
-                              src={URL.createObjectURL(lesson.image||undefined)}
+                              src={_.isString(lesson.image) ? lesson.image : URL.createObjectURL(lesson.image||undefined)}
                             />
                           </div>
                         )}
@@ -240,7 +251,7 @@ export default function CreateQuizModalButton({handleChangeRow}) {
                       type="submit"
                       variant="contained"
                       color="secondary">
-                      Create quiz
+                      Update quiz
                     </Button>
                   </AnimateButton>
                 </Box>

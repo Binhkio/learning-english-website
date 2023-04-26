@@ -16,8 +16,14 @@ const getLessonInfor = (payload) => {
     return axiosInstance.post(getLessonInfoUrl, payload)
 }
 
+const deleteLesson = (payload) => {
+    const deleteLessonUrl = `${AUTH_URL}/delete`
+    return axiosInstance.post(deleteLessonUrl, payload)
+}
+
 const lessonAPi = {
-    getLessonInfor
+    getLessonInfor,
+    deleteLesson,
 }
 
 export default lessonAPi

@@ -7,5 +7,6 @@ const lessonController = require('../controllers/lesson')
 
 Router.post('/', auth.authenticate, validationMiddleware(lessonValidate.lessonRequest()), lessonController.storeLessons)
 Router.post('/get-info', auth.authenticate, validationMiddleware(lessonValidate.lessonGetInfoRequest()) ,lessonController.getLesson)
+Router.post('/delete', auth.authenticateAdmin, validationMiddleware(lessonValidate.lessonDeleteRequest()) ,lessonController.deleteLesson)
 
 module.exports = Router

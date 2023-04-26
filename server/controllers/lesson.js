@@ -15,7 +15,14 @@ const getLesson = async (request, response) => {
     return response.send(helper.convertApi(payload, httpCode.SUCCESS, ''))
 }
 
+const deleteLesson = async (request, response) => {
+    const { _id } = request.body
+    const payload = await lessonService.deleteLesson(_id)
+    return response.send(helper.convertApi(payload, httpCode.SUCCESS, ''))
+}
+
 module.exports = {
     storeLessons,
-    getLesson
+    getLesson,
+    deleteLesson,
 }

@@ -10,9 +10,14 @@ const lessonGetInfoRequest = () => [
     check('ids', 'List lesson is invalid').notEmpty()
 ]
 
+const lessonDeleteRequest = () => [
+    check('_id', 'Lesson is invalid').not().isEmpty(),
+]
+
 const lessonValidate = {
     lessonRequest: lessonRequest,
-    lessonGetInfoRequest: lessonGetInfoRequest
+    lessonGetInfoRequest: lessonGetInfoRequest,
+    lessonDeleteRequest: lessonDeleteRequest,
 }
 
 module.exports = lessonValidate
