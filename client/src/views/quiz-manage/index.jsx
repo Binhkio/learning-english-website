@@ -92,14 +92,16 @@ const RowComponent = (props) => {
                       label="On"
                   />
               </TableCell>
-              <TableCell align="center" sx={{display:'flex', justifyContent:'space-evenly'}}>
+              <TableCell align="center">
                   <EditQuizButton
                     quiz_id={row._id}
                     default_name={row.name}
                     default_lessons={row.lessons}
                     handleChangeRow={handleChangeRow}
                   />
-                  <IconButton
+              </TableCell>
+              <TableCell align='center'>
+              <IconButton
                       onClick={() => {handleDeleteQuiz(row._id)}}
                   >
                     <DeleteOutline/>
@@ -206,7 +208,8 @@ function QuizManage() {
                               <TableCell align="center">Name</TableCell>
                               <TableCell align="center">Creator</TableCell>
                               <TableCell align="center">Status</TableCell>
-                              <TableCell align="center" />
+                              <TableCell align="center">Edit</TableCell>
+                              <TableCell align="center">Delete</TableCell>
                           </TableRow>
                       </TableHead>
                       <TableBody>

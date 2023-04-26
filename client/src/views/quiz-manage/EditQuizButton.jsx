@@ -90,7 +90,7 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
       return val
     }))
   }
-  
+
   const handleRemoveLesson = (idx) => {
     setLessons(lessons.filter((lesson, index) => index !== idx))
   }
@@ -163,7 +163,8 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
           <Formik
             initialValues={initValues}
             // validationSchema={validateRule}
-            onSubmit={handleSubmitForm}>
+            // onSubmit={handleSubmitForm}
+            >
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
               <form
                 noValidate
