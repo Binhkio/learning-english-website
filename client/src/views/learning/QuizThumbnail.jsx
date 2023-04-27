@@ -16,23 +16,20 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export function QuizThumbnail({quiz}) {
-  const [marked, setMarked] = useState(() => {
-    return quiz?.creator ? quiz.creator.quizzes.findIndex(quiz_id => quiz_id === quiz._id) > -1 : false
-  })
+  const userData = JSON.parse(sessionStorage.getItem('userData'))
+  const [marked, setMarked] = useState(userData.quizzes.findIndex(id => id === quiz._id) > -1)
   const navigate = useNavigate()
   
   if(_.isNil(quiz)) return (<></>);
 
   const handleBookmark = async () => {
-    const userData = JSON.parse(sessionStorage.getItem('userData'))
-    // const isMarked = userData.quizzes.findIndex(q => q._id === quiz._id) > -1
     const payload = {
       _id: userData._id,
-      ids: marked ? userData.quizzes.filter(q => q._id !== quiz._id) : [...userData.quizzes, quiz._id]
+      ids: marked ? userData.quizzes.filter(q => q !== quiz._id) : [...userData.quizzes, quiz._id]
     }
     await api.userApi.bookmarkQuiz(payload).then((response) => {
       const resData = response.data.data
-      console.log(resData);
+      sessionStorage.setItem('userData', JSON.stringify(resData))
     }, (error) => {
       console.log(error);
     })

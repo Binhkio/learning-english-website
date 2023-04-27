@@ -1,5 +1,6 @@
 const userDao = require('../daos/user-dao')
 const quizDao = require('../daos/quiz-dao')
+const lessonDao = require('../daos/lesson-dao')
 const _ = require('lodash')
 const authSecurity = require('./auth')
 
@@ -28,7 +29,9 @@ const updateLessonToUser = async (_id, ids) => {
     const user = await userDao.findUserByCondition(_id)
     if (_.isNil(user)) return { message: 'User is not in the database' }
 
-    const response = await userDao.updateLessonToUser(_id, ids)
+    const lessons = await lessonDao.findLessonByArrayId(ids)
+    const lessonIds = lessons.filter(lesson => !_.isNil(lesson)).map(lesson => lesson._id.toString())
+    const response = await userDao.updateLessonToUser(_id, lessonIds)
     return response
 }
 

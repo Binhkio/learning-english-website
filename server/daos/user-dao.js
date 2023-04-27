@@ -58,14 +58,13 @@ const editUser = async (user, newValue) => {
 }
 
 const updateLessonToUser = async (_id, ids) => {
-  const result = await User.findByIdAndUpdate(_id, {lessons: ids})
-  return result
+  await User.findByIdAndUpdate(_id, {lessons: ids})
+  return result = await User.findById(_id)
 }
 
 const updateQuizToUser = async (_id, ids) => {
-  console.log({_id, ids});
-  const result = await User.findByIdAndUpdate(_id, {quizzes: ids})
-  return result
+  await User.findByIdAndUpdate(_id, {quizzes: ids})
+  return result = await User.findById(_id)
 }
 
 module.exports = {

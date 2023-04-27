@@ -1,29 +1,23 @@
-import axios from "axios";
+import { axiosInstance } from "api";
 
 const ADMIN_URL = `${process.env.REACT_APP_API_BASE_URL}/admin`;
 
-const axiosInstance = axios.create({
-    baseURL: ADMIN_URL,
-    headers: {
-        'authorization': sessionStorage.getItem('token'),
-        'Accept' : 'application/json',
-        'Content-Type': 'application/json'
-    }
-})
-
 const getListUser = () => {
     const getListUserUrl = `${ADMIN_URL}/get-list-user`
-    return axiosInstance.get(getListUserUrl)
+    const axiosIns = axiosInstance(ADMIN_URL)
+    return axiosIns.get(getListUserUrl)
 }
 
 const editUserData = (payload) => {
     const editUserDataUrl = `${ADMIN_URL}/edit`
-    return axiosInstance.put(editUserDataUrl, payload)
+    const axiosIns = axiosInstance(ADMIN_URL)
+    return axiosIns.put(editUserDataUrl, payload)
 }
 
 const deleteUser = (payload) => {
     const deleteUserUrl = `${ADMIN_URL}/delete-user`
-    return axiosInstance.delete(deleteUserUrl, {
+    const axiosIns = axiosInstance(ADMIN_URL)
+    return axiosIns.delete(deleteUserUrl, {
         params: payload
     })
 }

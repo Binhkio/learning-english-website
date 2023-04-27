@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, ArrowLeftOutlined, ArrowRightOutlined } from "@mui/icons-material";
 import { Grid, IconButton } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import api from "api";
@@ -14,11 +14,6 @@ export function QuizLearning() {
   const quiz_id = location.state?.id || searchParams.get('id')
   const [quiz, setQuiz] = useState(null)
   const [curIndex, setCurIndex] = useState(0)
-
-  const checkMark = (id) => {
-    const userData = JSON.parse(sessionStorage.getItem('userData'))
-    return userData.lessons.findIndex(lesson => lesson._id === id) > -1
-  }
 
   const previousCard = () => {
     const preIndex = curIndex > 0 ? curIndex-1 : quiz?.lessons ? quiz.lessons.length-1 : 0
@@ -44,7 +39,6 @@ export function QuizLearning() {
     getQuizInfo()
   }, [])
 
-  console.log(curIndex);
   return (
     <MainCard title={quiz && quiz.name}>
       <Box
@@ -55,6 +49,15 @@ export function QuizLearning() {
           p: 4,
         }}
       >
+        {quiz?.lessons && quiz.lessons.map((lesson, index) => (
+            <FlipCard
+              visible={index === curIndex}
+              key={lesson._id}
+              id={lesson._id}
+              meaning={lesson.name}
+              imgUrl={lesson.image}
+            />
+        ))}
         <Stack
           direction='row' 
           sx={{
@@ -66,67 +69,23 @@ export function QuizLearning() {
         >
           <IconButton 
             sx={{
-              width:'10%',
-              height:'10%',
-              bgcolor:'#f8f8f8',
+              border:`solid 2px ${curIndex===0?'#f0f0f0':'black'}`
             }}
             onClick={previousCard}
             disabled={curIndex===0}
           >
-            <ArrowLeftOutlined sx={{fontSize:'60px'}} />
+            <ArrowBack sx={{fontSize:'20px'}} />
           </IconButton>
-          {quiz?.lessons && (
-            <FlipCard
-              id={quiz.lessons[curIndex]._id}
-              meaning={quiz.lessons[curIndex].name}
-              imgUrl={quiz.lessons[curIndex].image}
-              marked={checkMark(quiz.lessons[curIndex]._id)}
-            />
-          )}
+          <span>{curIndex+1} / {quiz?quiz.lessons.length:'?'}</span>
           <IconButton 
             sx={{
-              width:'10%',
-              height:'10%',
-              bgcolor:'#f8f8f8',
+              border:`solid 2px ${!quiz||curIndex===quiz.lessons.length-1?'#f0f0f0':'black'}`
             }}
             onClick={nextCard}
             disabled={!quiz||curIndex===quiz.lessons.length-1}
           >
-            <ArrowRightOutlined sx={{fontSize:'60px'}} />
+            <ArrowForward sx={{fontSize:'20px'}} />
           </IconButton>
-          {/* <Grid 
-            sx={{
-              width:'10%',
-              cursor:'pointer',
-              display:'grid',
-              alignItems:'center',
-              justifyContent:'center',
-              bgcolor:'#f8f8f8',
-            }}
-            onClick={previousCard}
-          >
-            <ArrowLeftOutlined sx={{fontSize:'60px'}} />
-          </Grid>
-          {quiz?.lessons && (
-            <FlipCard
-              meaning={quiz.lessons[curIndex].name}
-              imgUrl={quiz.lessons[curIndex].image}
-              marked={checkMark(quiz.lessons[curIndex]._id)}
-            />
-          )}
-          <Grid 
-            sx={{
-              width:'10%',
-              cursor:'pointer',
-              display:'grid',
-              alignItems:'center',
-              justifyContent:'center',
-              bgcolor:'#f8f8f8',
-            }}
-            onClick={nextCard}
-          >
-            <ArrowRightOutlined sx={{fontSize:'60px'}} />
-          </Grid> */}
         </Stack>
       </Box>
     </MainCard>
