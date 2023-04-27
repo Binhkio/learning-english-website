@@ -41,12 +41,17 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    overflow: hidden;
 }
 
 .content-field {
     font-size: 28px;
     padding: 50px 20px;
     border-radius: 8px;
+}
+
+.img-container {
+    position: absolute;
 }
 
 .learned-mark {
@@ -62,4 +67,9 @@
 .card__face--back {
     transform: rotateY(180deg) rotateZ(180deg);
 }
-  
+
+.img-container > img {
+    width: 100%; /* or any custom size */
+    height: 100%;
+    padding: 30px;
+}

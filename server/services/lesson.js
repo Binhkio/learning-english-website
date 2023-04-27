@@ -1,6 +1,7 @@
 const lessonDao = require('../daos/lesson-dao')
 const _ = require('lodash')
 const userDao = require('../daos/user-dao')
+const quizDao = require('../daos/quiz-dao')
 
 const NEW_LESSON = 1
 const OLD_LESSON = 0
@@ -28,7 +29,13 @@ const getLesson = async (id) => {
     return lesson
 }
 
+const deleteLesson = async (id) => {
+    const lesson = await lessonDao.deleteLesson(id)
+    return lesson
+}
+
 module.exports = {
     insertLessons,
-    getLesson
+    getLesson,
+    deleteLesson,
 }

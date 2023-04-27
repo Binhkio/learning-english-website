@@ -1,29 +1,23 @@
-import axios from "axios";
+import { axiosInstance } from "api";
 
-const AUTH_URL = 'http://127.0.0.1:3031/admin';
-
-const axiosInstance = axios.create({
-    baseURL: AUTH_URL,
-    headers: {
-        'authorization': sessionStorage.getItem('token'),
-        'Accept' : 'application/json',
-        'Content-Type': 'application/json'
-    }
-})
+const ADMIN_URL = `${process.env.REACT_APP_API_BASE_URL}/admin`;
 
 const getListUser = () => {
-    const getListUserUrl = `${AUTH_URL}/get-list-user`
-    return axiosInstance.get(getListUserUrl)
+    const getListUserUrl = `${ADMIN_URL}/get-list-user`
+    const axiosIns = axiosInstance(ADMIN_URL)
+    return axiosIns.get(getListUserUrl)
 }
 
 const editUserData = (payload) => {
-    const editUserDataUrl = `${AUTH_URL}/edit`
-    return axiosInstance.put(editUserDataUrl, payload)
+    const editUserDataUrl = `${ADMIN_URL}/edit`
+    const axiosIns = axiosInstance(ADMIN_URL)
+    return axiosIns.put(editUserDataUrl, payload)
 }
 
 const deleteUser = (payload) => {
-    const deleteUserUrl = `${AUTH_URL}/delete-user`
-    return axiosInstance.delete(deleteUserUrl, {
+    const deleteUserUrl = `${ADMIN_URL}/delete-user`
+    const axiosIns = axiosInstance(ADMIN_URL)
+    return axiosIns.delete(deleteUserUrl, {
         params: payload
     })
 }

@@ -1,8 +1,8 @@
 // assets
-import { IconUser } from '@tabler/icons';
+import { IconUser, IconBook } from '@tabler/icons';
 
 // constant
-const icons = { IconUser };
+const icons = { IconUser, IconBook };
 
 const manage = {
     id: 'manage',
@@ -25,6 +25,14 @@ const manage = {
             //         target: true
             //     },
             // ]
+        },
+        {
+            id: 'manageQuiz',
+            title: 'Quiz',
+            type: 'item',
+            url: '/manage/quiz',
+            icon: icons.IconBook,
+            breadcrumbs: true
         }
     ]
 };

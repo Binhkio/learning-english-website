@@ -21,6 +21,11 @@ const findQuizByCondition = async (condition) => {
   return null;
 };
 
+const findLessonByArrayId = async (ids) => {
+  const quizzes = await Quiz.find({_id: {$in: ids}})
+  return quizzes;
+};
+
 const insertData = async (condition) => {
   const quiz = await Quiz.create({
     name: condition.name,
@@ -33,18 +38,25 @@ const insertData = async (condition) => {
 }
 
 const deleteQuiz = async (condition) => {
-  const result = await Quiz.deleteOne(condition);
+  const result = await Quiz.findByIdAndDelete(condition);
   return result;
 }
 
-const editQuiz = async (quiz, newValue) => {
-  const result = await Quiz.updateOne(quiz, newValue);
+const editQuiz = async (quiz_id, newValue) => {
+  const result = await Quiz.findByIdAndUpdate(quiz_id, newValue);
   return result;
+}
+
+const getAllQuizzes = async () => {
+  const result = await Quiz.find()
+  return result
 }
 
 module.exports = {
   findQuizByCondition,
+  findLessonByArrayId,
   insertData,
   deleteQuiz,
   editQuiz,
+  getAllQuizzes,
 }

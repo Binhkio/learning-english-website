@@ -21,7 +21,6 @@ const insertData = async (condition) => {
     image: condition.image,
     status: condition.status,
   });
-
   return lesson;
 }
 
@@ -36,12 +35,12 @@ const findLessonByArrayId = async (ids) => {
 }
 
 const deleteLesson = async (condition) => {
-  const result = await Lesson.deleteOne(condition);
+  const result = await Lesson.findByIdAndDelete(condition)
   return result;
 }
 
 const editLesson = async (lesson, newValue) => {
-  const result = await Lesson.updateOne(lesson, newValue);
+  const result = await Lesson.findByIdAndUpdate(lesson._id, newValue);
   return result;
 }
 

@@ -1,23 +1,22 @@
-import axios from "axios";
+import { axiosInstance } from "api";
 
-const AUTH_URL = 'http://127.0.0.1:3031/lesson';
-
-const axiosInstance = axios.create({
-    baseURL: AUTH_URL,
-    headers: {
-        'authorization': sessionStorage.getItem('token'),
-        'Accept' : 'application/json',
-        'Content-Type': 'application/json'
-    }
-})
+const LESSON_URL = `${process.env.REACT_APP_API_BASE_URL}/lesson`;
 
 const getLessonInfor = (payload) => {
-    const getLessonInfoUrl = `${AUTH_URL}/get-info`
-    return axiosInstance.post(getLessonInfoUrl, payload)
+    const getLessonInfoUrl = `${LESSON_URL}/get-info`
+    const axiosIns = axiosInstance(LESSON_URL)
+    return axiosIns.post(getLessonInfoUrl, payload)
+}
+
+const deleteLesson = (payload) => {
+    const deleteLessonUrl = `${LESSON_URL}/delete`
+    const axiosIns = axiosInstance(LESSON_URL)
+    return axiosIns.post(deleteLessonUrl, payload)
 }
 
 const lessonAPi = {
-    getLessonInfor
+    getLessonInfor,
+    deleteLesson,
 }
 
 export default lessonAPi

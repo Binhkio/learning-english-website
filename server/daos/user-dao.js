@@ -57,13 +57,14 @@ const editUser = async (user, newValue) => {
   return result
 }
 
-const addLessonToUser = async (_id, ids) => {
-  let user
-  if (ObjectId.isValid(_id)) {
-    user = await User.findById(_id).exec();
-  }
-  const result = await User.updateOne(user, {lessons: ids})
-  return result
+const updateLessonToUser = async (_id, ids) => {
+  await User.findByIdAndUpdate(_id, {lessons: ids})
+  return result = await User.findById(_id)
+}
+
+const updateQuizToUser = async (_id, ids) => {
+  await User.findByIdAndUpdate(_id, {quizzes: ids})
+  return result = await User.findById(_id)
 }
 
 module.exports = {
@@ -72,5 +73,6 @@ module.exports = {
   deleteUser,
   editUser,
   listUserByCondition,
-  addLessonToUser
+  updateLessonToUser,
+  updateQuizToUser,
 };
