@@ -28,6 +28,7 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
   const [open, setOpen] = useState(false);
   const [quizname, setQuizname] = useState(default_name)
   const [lessons, setLessons] = useState(default_lessons)
+  const [status, setStatus] = useState(false)
   const [notificationState, setNotificationState] = useState({
     isLogin: false,
     vertical: 'top',
@@ -40,6 +41,7 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
       api.quizApi.getQuizInfo(payload).then((response) => {
         const data = response.data.data
         setQuizname(data.name)
+        setStatus(data.status)
         setLessons(data.lessons)
       }, (error) => {
         console.log(error);
@@ -119,6 +121,7 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
       _id: quiz_id,
       name: quizname,
       lessons: verifyLessons,
+      status: status,
     };
     await api.quizApi
       .updateQuiz(payload)
@@ -159,7 +162,7 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
           <Formik
             initialValues={initValues}
             // validationSchema={validateRule}
-            // onSubmit={handleSubmitForm}
+            onSubmit={handleSubmitForm}
             >
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
               <form

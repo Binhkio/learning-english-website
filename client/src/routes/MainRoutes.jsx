@@ -3,6 +3,7 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
+import { QuizLearning } from 'views/learning/quiz-learning';
 
 // sample page routing
 const Learning = Loadable(lazy(() => import('views/learning')));
@@ -17,6 +18,10 @@ const MainRoutes = {
         {
             path: '/',
             element: <Learning />
+        },
+        {
+            path: '/quiz/*',
+            element: <QuizLearning />
         },
         {
             path: '/manage/user',

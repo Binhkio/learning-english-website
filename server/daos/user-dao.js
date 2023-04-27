@@ -57,12 +57,14 @@ const editUser = async (user, newValue) => {
   return result
 }
 
-const addLessonToUser = async (_id, ids) => {
-  let user
-  if (ObjectId.isValid(_id)) {
-    user = await User.findById(_id).exec();
-  }
-  const result = await User.updateOne(user, {lessons: ids})
+const updateLessonToUser = async (_id, ids) => {
+  const result = await User.findByIdAndUpdate(_id, {lessons: ids})
+  return result
+}
+
+const updateQuizToUser = async (_id, ids) => {
+  console.log({_id, ids});
+  const result = await User.findByIdAndUpdate(_id, {quizzes: ids})
   return result
 }
 
@@ -72,5 +74,6 @@ module.exports = {
   deleteUser,
   editUser,
   listUserByCondition,
-  addLessonToUser
+  updateLessonToUser,
+  updateQuizToUser,
 };

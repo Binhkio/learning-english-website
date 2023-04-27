@@ -84,7 +84,7 @@ const getAllQuizzes = async () => {
     return verifyQuizzes
 }
 
-const getQuiz = async (id) => {
+const getQuizzes = async (id) => {
     const quiz = await quizDao.findLessonByArrayId(id)
     if (_.isEmpty(quiz)) return { message: ' Can not find quiz' }
     return quiz
@@ -110,7 +110,7 @@ const deleteQuiz = async (id) => {
 
 module.exports = {
     createQuiz,
-    getQuiz,
+    getQuizzes,
     getAllQuizzes,
     updateQuiz,
     deleteQuiz,

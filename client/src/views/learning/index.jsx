@@ -1,15 +1,34 @@
 import { Typography } from '@mui/material';
+import { Stack } from '@mui/system';
+import api from 'api';
+import { useEffect, useState } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
+import { QuizThumbnail } from './QuizThumbnail';
 
 function Learning() {
+    const [quizzes, setQuizzes] = useState([])
+
+    useEffect(() => {
+        api.quizApi.getAllQuizzes().then((response) => {
+            const quizzesData = response.data.data
+            setQuizzes(quizzesData.filter(quiz => quiz.status))
+        }, (error) => {
+            console.log(error);
+        })
+    }, [])
+    console.log(quizzes);
+    
     return (
         <MainCard title="Hoc">
-            {/* <Typography variant="body2">
-                Lorem ipsum dolor sit amen, consenter nipissing eli, sed do elusion tempos incident ut laborers et doolie magna alissa. Ut
-                enif ad minim venice, quin nostrum exercitation illampu laborings nisi ut liquid ex ea commons construal. Duos aube grue
-                dolor in reprehended in voltage veil esse colum doolie eu fujian bulla parian. Exceptive sin ocean cuspidate non president,
-                sunk in culpa qui officiate descent molls anim id est labours.
-            </Typography> */}
+            <Stack spacing={2}>
+                {!!quizzes ? quizzes.map((quiz, index) => (
+                    <QuizThumbnail quiz={quiz} key={index}/>
+                )) : (
+                    <Typography variant='h3'>
+                        No quiz availble
+                    </Typography>
+                )}
+            </Stack>
         </MainCard>
     );
 }

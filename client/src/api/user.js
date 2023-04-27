@@ -16,8 +16,20 @@ const getCurrentUser = (payload) => {
   return axiosInstance.post(getCurrentUserUrl, payload);
 };
 
+const bookmarkQuiz = (payload) => {
+  const bookmarkQuizUrl = `${USER_URL}/bookmark/quiz`;
+  return axiosInstance.post(bookmarkQuizUrl, payload);
+};
+
+const bookmarkLesson = (payload) => {
+  const bookmarkLessonUrl = `${USER_URL}/bookmark/lesson`;
+  return axiosInstance.post(bookmarkLessonUrl, payload);
+};
+
 const userApi = {
   getCurrentUser,
+  bookmarkQuiz,
+  bookmarkLesson,
 };
 
 export default userApi;

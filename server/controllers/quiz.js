@@ -15,9 +15,9 @@ const updateQuiz = async (request, response) => {
     return response.send(helper.convertApi(payload, httpCode.SUCCESS, ''))
 }
 
-const getQuiz = async (request, response) => {
+const getQuizzes = async (request, response) => {
     const { ids } = request.body
-    const payload = await QuizService.getQuiz(ids)
+    const payload = await QuizService.getQuizzes(ids)
     return response.send(helper.convertApi(payload, httpCode.SUCCESS, ''))
 }
 
@@ -40,7 +40,7 @@ const getAllQuizzes = async (request, response) => {
 
 module.exports = {
     createQuiz,
-    getQuiz,
+    getQuizzes,
     getOneQuiz,
     getAllQuizzes,
     updateQuiz,

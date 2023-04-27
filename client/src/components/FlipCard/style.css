@@ -49,6 +49,10 @@
     border-radius: 8px;
 }
 
+.img-container {
+    position: absolute;
+}
+
 .learned-mark {
     position: absolute;
     top: 4px;
@@ -62,4 +66,9 @@
 .card__face--back {
     transform: rotateY(180deg) rotateZ(180deg);
 }
-  
+
+.img-container > img {
+    width: 100%; /* or any custom size */
+    height: 100%;
+    padding: 30px;
+}

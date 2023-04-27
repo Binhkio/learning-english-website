@@ -9,6 +9,20 @@ const getCurrentUser = async (request, response) => {
     return response.send(helper.convertApi(payload, httpCode.CREATED_SUCCESS, ''))
 }
 
+const updateQuizToUser = async (request, response) => {
+    const { _id, ids } = request.body
+    const payload = await userService.updateQuizToUser(_id, ids)
+    return response.send(helper.convertApi(payload, httpCode.CREATED_SUCCESS, ''))
+}
+
+const updateLessonToUser = async (request, response) => {
+    const { _id, ids } = request.body
+    const payload = await userService.updateLessonToUser(_id, ids)
+    return response.send(helper.convertApi(payload, httpCode.CREATED_SUCCESS, ''))
+}
+
 module.exports = {
-    getCurrentUser
+    getCurrentUser,
+    updateQuizToUser,
+    updateLessonToUser,
 }

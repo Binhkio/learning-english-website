@@ -21,6 +21,11 @@ const findQuizByCondition = async (condition) => {
   return null;
 };
 
+const findLessonByArrayId = async (ids) => {
+  const quizzes = await Quiz.find({_id: {$in: ids}})
+  return quizzes;
+};
+
 const insertData = async (condition) => {
   const quiz = await Quiz.create({
     name: condition.name,
@@ -49,6 +54,7 @@ const getAllQuizzes = async () => {
 
 module.exports = {
   findQuizByCondition,
+  findLessonByArrayId,
   insertData,
   deleteQuiz,
   editQuiz,

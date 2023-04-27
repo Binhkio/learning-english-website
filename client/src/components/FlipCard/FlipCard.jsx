@@ -1,20 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './style.css'
 import { Box, IconButton, Tooltip } from '@mui/material'
 import { BookmarkAddedRounded, BookmarkBorderRounded } from '@mui/icons-material';
 
-const FlipCard = ({ imgUrl, meaning, marked=false, width, height }) => {
+const FlipCard = ({ id, imgUrl, meaning, marked=false, width, height }) => {
     const [isFliped, setIsFliped] = useState(false)
     const [isMarked, setIsMarked] = useState(marked)
     const handleFlip = () => {
         setIsFliped(!isFliped)
     }
+    const clearFlip = () => {
+        setIsFliped(false)
+    }
+
+    useEffect(() => {
+        clearFlip()
+    }, [id])
 
     return (
         <Box
             className="scene scene--card"
             width={width||420}
             height={height||360}
+            key={id}
         >
             <div className={`card ${isFliped&&'is-flipped'}`}>
                 <div className="card__face card__face--front">
@@ -32,7 +40,7 @@ const FlipCard = ({ imgUrl, meaning, marked=false, width, height }) => {
                         </Tooltip>
                     </div>
                     <div className='click-field' onClick={handleFlip}>
-                        <div className='content-field'>
+                        <div className='content-field img-container'>
                             <img
                                 src={imgUrl}
                                 srcSet={imgUrl}

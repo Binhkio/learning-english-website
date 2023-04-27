@@ -4,9 +4,14 @@ import menuItem from 'menu-items';
 import userUtils from 'utils/user';
 import { useState } from 'react';
 import _ from 'lodash'
+import { useNavigate } from 'react-router';
 
 const MenuList = () => {
   const [user, setUser] = useState(userUtils.getSessionStorage());
+  const navigate = useNavigate()
+  if(_.isNil(user)){
+    return navigate('/auth/login')
+  }
 
   const navItems = menuItem.items.map((item) => {
     switch (item.type) {
