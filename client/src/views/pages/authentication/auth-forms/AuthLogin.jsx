@@ -3,9 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
@@ -13,7 +11,6 @@ import {
   InputLabel,
   OutlinedInput,
   Snackbar,
-  Stack,
   Typography,
 } from '@mui/material';
 import * as Yup from 'yup';
@@ -28,7 +25,6 @@ import user from 'utils/user';
 
 const LoginForm = ({ ...others }) => {
   const theme = useTheme();
-  const [checked, setChecked] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
@@ -38,6 +34,8 @@ const LoginForm = ({ ...others }) => {
     vertical: 'top',
     horizontal: 'right',
   });
+
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const { isLogin, vertical, horizontal } = notificationState;
 
@@ -72,12 +70,15 @@ const LoginForm = ({ ...others }) => {
         setStatus({ success: true });
         setSubmitting(false);
         setNotificationState({ ...notificationState, isLogin: true });
+        setSnackbarMessage(payload.message);
         navigate('/');
       })
       .catch((error) => {
-        setStatus({ success: false });
-        setErrors({ submit: error.message });
-        setSubmitting(false);
+        // setStatus({ success: false });
+        // setErrors({ submit: error.message });
+        // setSubmitting(false);
+        setNotificationState({ ...notificationState, isLogin: true });
+        setSnackbarMessage(error.message);
       });
   };
 
@@ -176,30 +177,6 @@ const LoginForm = ({ ...others }) => {
               )}
             </FormControl>
 
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              spacing={1}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={(event) => setChecked(event.target.checked)}
-                    name="checked"
-                    color="primary"
-                  />
-                }
-                label="Remember me"
-              />
-              <Typography
-                variant="subtitle1"
-                color="secondary"
-                sx={{ textDecoration: 'none', cursor: 'pointer' }}>
-                Forgot Password?
-              </Typography>
-            </Stack>
-
             {errors.submit && (
               <Box sx={{ mt: 3 }}>
                 <FormHelperText error>{errors.submit}</FormHelperText>
@@ -225,7 +202,7 @@ const LoginForm = ({ ...others }) => {
               anchorOrigin={{ vertical, horizontal }}
               open={isLogin}
               onClose={handleCloseNotification}
-              message="Login success"
+              message={snackbarMessage}
               key={vertical + horizontal}
             />
           </form>
