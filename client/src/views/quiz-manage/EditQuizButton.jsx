@@ -9,6 +9,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Stack } from '@mui/system';
 import { useEffect, useState } from 'react';
 import _ from 'lodash';
+import user from 'utils/user';
 
 const style = {
   position: 'absolute',
@@ -117,7 +118,7 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
     })
     const verifyLessons = await Promise.all(verifyLessonsPromise)
     const payload = {
-      user_id: JSON.parse(sessionStorage.getItem('userData'))._id,
+      user_id: user.getSessionStorage()._id,
       _id: quiz_id,
       name: quizname,
       lessons: verifyLessons,

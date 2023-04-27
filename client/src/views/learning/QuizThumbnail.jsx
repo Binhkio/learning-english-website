@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import _ from 'lodash';
 import api from 'api';
+import user from 'utils/user';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#f6f6f6',
@@ -16,20 +17,20 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export function QuizThumbnail({quiz}) {
-  const userData = JSON.parse(sessionStorage.getItem('userData'))
-  const [marked, setMarked] = useState(userData.quizzes.findIndex(id => id === quiz._id) > -1)
+  const [marked, setMarked] = useState(user.getSessionStorage().quizzes.findIndex(id => id === quiz._id) > -1)
   const navigate = useNavigate()
   
   if(_.isNil(quiz)) return (<></>);
 
   const handleBookmark = async () => {
+    const userData = user.getSessionStorage()
     const payload = {
       _id: userData._id,
       ids: marked ? userData.quizzes.filter(q => q !== quiz._id) : [...userData.quizzes, quiz._id]
     }
     await api.userApi.bookmarkQuiz(payload).then((response) => {
       const resData = response.data.data
-      sessionStorage.setItem('userData', JSON.stringify(resData))
+      user.setSessionStorage(resData)
     }, (error) => {
       console.log(error);
     })

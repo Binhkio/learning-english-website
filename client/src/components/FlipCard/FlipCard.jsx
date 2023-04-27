@@ -3,6 +3,7 @@ import './style.css'
 import { Box, IconButton, Tooltip } from '@mui/material'
 import { BookmarkAddedRounded, BookmarkBorderRounded } from '@mui/icons-material';
 import api from 'api';
+import user from 'utils/user';
 
 const Mark = ({isMarked, handleBookmark}) => (
     <Tooltip
@@ -19,9 +20,8 @@ const Mark = ({isMarked, handleBookmark}) => (
 )
 
 const FlipCard = ({ id, imgUrl, meaning, width, height, visible }) => {
-    const userData = JSON.parse(sessionStorage.getItem('userData'))
     const [isFliped, setIsFliped] = useState(false)
-    const [isMarked, setIsMarked] = useState(userData.lessons.findIndex(lesson => lesson === id) > -1)
+    const [isMarked, setIsMarked] = useState(user.getSessionStorage().lessons.findIndex(lesson => lesson === id) > -1)
     const handleFlip = () => {
         setIsFliped(!isFliped)
     }
@@ -30,6 +30,7 @@ const FlipCard = ({ id, imgUrl, meaning, width, height, visible }) => {
     }
 
     const handleBookmark = async () => {
+        const userData = user.getSessionStorage()
         const payload = {
             _id: userData._id,
             ids: isMarked ? userData.lessons.filter(_id => _id !== id) : [...userData.lessons, id]
@@ -37,7 +38,7 @@ const FlipCard = ({ id, imgUrl, meaning, width, height, visible }) => {
         console.log('call api');
         await api.userApi.bookmarkLesson(payload).then((response) => {
             const resData = response.data.data
-            sessionStorage.setItem('userData', JSON.stringify(resData))
+            user.setSessionStorage(resData)
         }, (error) => {
             console.log(error);
         })
@@ -46,7 +47,7 @@ const FlipCard = ({ id, imgUrl, meaning, width, height, visible }) => {
 
     useEffect(() => {
         clearFlip()
-    }, [id])
+    }, [visible])
 
     return (
         <Box

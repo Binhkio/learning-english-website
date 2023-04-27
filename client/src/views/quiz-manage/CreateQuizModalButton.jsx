@@ -9,6 +9,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { Stack } from '@mui/system';
 import { useState } from 'react';
 import _ from 'lodash';
+import user from 'utils/user';
 
 const style = {
   position: 'absolute',
@@ -99,7 +100,7 @@ export default function CreateQuizModalButton({handleChangeRow}) {
     })
     const verifyLessons = await Promise.all(verifyLessonsPromise)
     const payload = {
-      _id: JSON.parse(sessionStorage.getItem('userData'))._id,
+      _id: user.getSessionStorage()._id,
       data: {
         name: values.quizname,
         lessons: verifyLessons,

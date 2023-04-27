@@ -6,6 +6,7 @@ import api from 'api';
 import { Collapse, IconButton, Paper, Snackbar, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { DeleteOutline, EditOutlined, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import EditQuizButton from './EditQuizButton';
+import user from 'utils/user';
 
 const Title = ({handleChangeRow}) => (
   <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -44,7 +45,7 @@ const RowComponent = (props) => {
 
   const handleStatusChange = async () => {
     const payload = {
-      user_id: JSON.parse(sessionStorage.getItem('userData'))._id,
+      user_id: user.getSessionStorage()._id,
       _id: row._id,
       status: !row.status,
     }

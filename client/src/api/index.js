@@ -5,11 +5,12 @@ import lessonAPi from "./lesson";
 import quizApi from "./quiz";
 import firebaseApi from "./firebase";
 import axios from "axios";
+import token from "utils/token";
 
 export const axiosInstance = (BASE_URL) => axios.create({
     baseURL: BASE_URL,
     headers: {
-        'authorization': sessionStorage.getItem('token'),
+        'authorization': token.getSessionStorage().token,
         'Accept' : 'application/json',
         'Content-Type': 'application/json'
     }
