@@ -25,6 +25,8 @@ const login = async (email, password) => {
   const user = await userDao.findUserByCondition({ email });
   if (_.isNil(user)) return { message: 'User or password wrong' }
 
+  if (user.status === 0) return { message: 'User has been block, please contact to admin to unlock account' }
+
   const passwordCompare = await bcrypt.compare(password, user.password)
   if (!passwordCompare) return { message: 'User or password wrong' }
 
