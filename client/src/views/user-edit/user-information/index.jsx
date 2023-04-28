@@ -66,7 +66,6 @@ export default function UserInformationForm({ ...other }) {
       _id: userData._id,
       data: {
         name: values.name,
-        email: values.email,
       },
     };
 
@@ -103,7 +102,6 @@ export default function UserInformationForm({ ...other }) {
     setUserState((prevState) => ({
       ...prevState,
       nameDisable: !nameDisable,
-      emailDisable: !emailDisable,
       editText: editText,
       isEdit: !isEdit,
     }));

@@ -207,7 +207,7 @@ function ProfileSection() {
                             />
                           </ListItemIcon>
                           <ListItemText
-                            primary={<Typography variant="body2">Account Settings</Typography>}
+                            primary={<Typography variant="body2">Edit information</Typography>}
                           />
                         </ListItemButton>
                         <ListItemButton

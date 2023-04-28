@@ -20,10 +20,17 @@ const bookmarkLesson = (payload) => {
   return axiosIns.post(bookmarkLessonUrl, payload);
 };
 
+const changePassword = (payload) => {
+  const changePasswordUrl = `${USER_URL}/change-password`
+  const axiosIns = axiosInstance(USER_URL)
+  return axiosIns.post(changePasswordUrl, payload)
+}
+
 const userApi = {
   getCurrentUser,
   bookmarkQuiz,
   bookmarkLesson,
+  changePassword
 };
 
 export default userApi;
