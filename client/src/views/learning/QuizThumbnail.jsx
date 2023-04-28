@@ -1,13 +1,27 @@
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Box, Stack } from '@mui/system';
-import { Divider, IconButton, Snackbar, Typography } from '@mui/material';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Divider,
+    IconButton,
+    Slide,
+    Snackbar,
+    Typography,
+} from '@mui/material';
 import { BookmarkAdded, BookmarkBorder, DensityMediumOutlined } from '@mui/icons-material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import _ from 'lodash';
 import api from 'api';
 import user from 'utils/user';
+import { forwardRef } from 'react';
+import token from 'utils/token';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#f6f6f6',
@@ -16,12 +30,30 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+const Transition = forwardRef(function Transition(props, ref) {
+    return (
+        <Slide
+            direction="up"
+            ref={ref}
+            {...props}
+        />
+    );
+});
+
 export function QuizThumbnail({ quiz }) {
+    const navigate = useNavigate();
+
+    const [open, setOpen] = useState(false);
+
     const [notificationState, setNotificationState] = useState({
         isReloead: false,
         vertical: 'top',
         horizontal: 'right',
     });
+
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
+    const [marked, setMarked] = useState(user.getSessionStorage().quizzes.findIndex((id) => id === quiz._id) > -1);
 
     const { isReloead, vertical, horizontal } = notificationState;
 
@@ -29,8 +61,46 @@ export function QuizThumbnail({ quiz }) {
         setNotificationState({ ...notificationState, isReloead: false });
     };
 
-    const [marked, setMarked] = useState(user.getSessionStorage().quizzes.findIndex((id) => id === quiz._id) > -1);
-    const navigate = useNavigate();
+    const [userData, setUserData] = useState(user.getSessionStorage);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleResetProcess = async () => {
+        const userData = user.getSessionStorage();
+        const payload = {
+            _id: userData._id,
+            data: {
+                lessons: [],
+            },
+        };
+
+        await api.adminApi
+            .editUserData(payload)
+            .then((response) => {
+                setOpen(false);
+                setNotificationState({ ...notificationState, isReloead: true });
+                setSnackbarMessage('Update success');
+                reloeadCurrentUser()
+            })
+            .catch((error) => {
+                setOpen(false);
+                setNotificationState({ ...notificationState, isReloead: true });
+                setSnackbarMessage(error.message);
+            });
+    };
+
+    const reloeadCurrentUser = async () => {
+        await api.userApi.getCurrentUser({_id: userData._id}).then((response) => {
+          const payload = response.data.data
+          user.setSessionStorage(payload.user);
+        })
+      }
 
     if (_.isNil(quiz)) return <></>;
 
@@ -45,6 +115,7 @@ export function QuizThumbnail({ quiz }) {
                 const resData = response.data.data;
                 user.setSessionStorage(resData);
                 setNotificationState({ ...notificationState, isReloead: true });
+                setSnackbarMessage('Update success');
             },
             (error) => {
                 console.log(error);
@@ -81,18 +152,35 @@ export function QuizThumbnail({ quiz }) {
                     gap={1}
                     padding={1}>
                     <IconButton onClick={handleBookmark}>{marked ? <BookmarkAdded /> : <BookmarkBorder />}</IconButton>
-                    {/* <IconButton onClick={() => {console.log('asd')}}>
-          <DensityMediumOutlined/>
-        </IconButton> */}
+                    <IconButton onClick={handleClickOpen}>
+                        <DensityMediumOutlined />
+                    </IconButton>
                 </Stack>
             </Item>
             <Snackbar
                 anchorOrigin={{ vertical, horizontal }}
                 open={isReloead}
                 onClose={handleCloseNotification}
-                message="Update success"
+                message={snackbarMessage}
                 key={vertical + horizontal}
             />
+            <Dialog
+                open={open}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description">
+                <DialogTitle>{'Reset lesson'}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        When you click yes, all progress is reset, are you sure?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={handleResetProcess}>Agree</Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 }
