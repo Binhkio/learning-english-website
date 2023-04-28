@@ -19,7 +19,7 @@ const Mark = ({isMarked, handleBookmark}) => (
     </Tooltip>
 )
 
-const FlipCard = ({ id, imgUrl, meaning, width, height, visible }) => {
+const FlipCard = ({ id, imgUrl, meaning, width, height, visible, handleCheckProcess }) => {
     const [isFliped, setIsFliped] = useState(false)
     const [isMarked, setIsMarked] = useState(user.getSessionStorage().lessons.findIndex(lesson => lesson === id) > -1)
     const handleFlip = () => {
@@ -39,6 +39,7 @@ const FlipCard = ({ id, imgUrl, meaning, width, height, visible }) => {
         await api.userApi.bookmarkLesson(payload).then((response) => {
             const resData = response.data.data
             user.setSessionStorage(resData)
+            handleCheckProcess(resData)
         }, (error) => {
             console.log(error);
         })
