@@ -16,10 +16,9 @@ function Learning() {
             console.log(error);
         })
     }, [])
-    console.log(quizzes);
-    
+
     return (
-        <MainCard title="Hoc">
+        <MainCard title="Học từ mới bằng flash card">
             <Stack spacing={2}>
                 {!!quizzes ? quizzes.map((quiz, index) => (
                     <QuizThumbnail quiz={quiz} key={index}/>

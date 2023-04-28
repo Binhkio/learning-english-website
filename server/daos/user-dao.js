@@ -53,7 +53,8 @@ const deleteUser = async (condition) => {
 }
 
 const editUser = async (user, newValue) => {
-  const result = await User.updateOne(user, newValue)
+  const {_id} = user
+  const result = await User.updateOne({ _id: _id }, newValue)
   return result
 }
 

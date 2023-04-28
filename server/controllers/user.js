@@ -21,8 +21,15 @@ const updateLessonToUser = async (request, response) => {
     return response.send(helper.convertApi(payload, httpCode.CREATED_SUCCESS, ''))
 }
 
+const changePassword = async (request, response) => {
+    const {_id, data} = request.body
+    const payload = await userService.changePassword(_id, data)
+    return response.send(helper.convertApi(payload, httpCode.CREATED_SUCCESS, ''))
+}
+
 module.exports = {
     getCurrentUser,
     updateQuizToUser,
     updateLessonToUser,
+    changePassword
 }

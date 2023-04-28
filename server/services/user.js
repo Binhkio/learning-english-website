@@ -1,42 +1,66 @@
-const userDao = require('../daos/user-dao')
-const quizDao = require('../daos/quiz-dao')
-const lessonDao = require('../daos/lesson-dao')
-const _ = require('lodash')
-const authSecurity = require('./auth')
+const userDao = require('../daos/user-dao');
+const quizDao = require('../daos/quiz-dao');
+const lessonDao = require('../daos/lesson-dao');
+const _ = require('lodash');
+const authSecurity = require('./auth');
+const bcrypt = require('bcrypt');
+const constants = require('../utils/constants');
 
 const getCurrentUser = async (id) => {
-    const user = await userDao.findUserByCondition({ _id: id })
+    const user = await userDao.findUserByCondition({ _id: id });
 
-    if (_.isNil(user)) return { message: 'User is not in the database' }
+    if (_.isNil(user)) return { message: 'User is not in the database' };
 
-    const { email, _id , role } = user
-    const jsonToken = await authSecurity.generateAccessToken(email, _id.toString(), role)
-    let response = { user, jsonToken }
-    return response
-}
+    const { email, _id, role } = user;
+    const jsonToken = await authSecurity.generateAccessToken(email, _id.toString(), role);
+    let response = { user, jsonToken };
+    return response;
+};
 
 const updateQuizToUser = async (_id, ids) => {
-    const user = await userDao.findUserByCondition(_id)
-    if (_.isNil(user)) return { message: 'User is not in the database' }
+    const user = await userDao.findUserByCondition(_id);
+    if (_.isNil(user)) return { message: 'User is not in the database' };
 
-    const quizzes = await quizDao.findLessonByArrayId(ids)
-    const quizIds = quizzes.filter(quiz => !_.isNil(quiz)).map(quiz => quiz._id.toString())
-    const response = await userDao.updateQuizToUser(_id, quizIds)
-    return response
-}
+    const quizzes = await quizDao.findLessonByArrayId(ids);
+    const quizIds = quizzes.filter((quiz) => !_.isNil(quiz)).map((quiz) => quiz._id.toString());
+    const response = await userDao.updateQuizToUser(_id, quizIds);
+    return response;
+};
 
 const updateLessonToUser = async (_id, ids) => {
-    const user = await userDao.findUserByCondition(_id)
-    if (_.isNil(user)) return { message: 'User is not in the database' }
+    const user = await userDao.findUserByCondition(_id);
+    if (_.isNil(user)) return { message: 'User is not in the database' };
 
-    const lessons = await lessonDao.findLessonByArrayId(ids)
-    const lessonIds = lessons.filter(lesson => !_.isNil(lesson)).map(lesson => lesson._id.toString())
-    const response = await userDao.updateLessonToUser(_id, lessonIds)
-    return response
-}
+    const lessons = await lessonDao.findLessonByArrayId(ids);
+    const lessonIds = lessons.filter((lesson) => !_.isNil(lesson)).map((lesson) => lesson._id.toString());
+    const response = await userDao.updateLessonToUser(_id, lessonIds);
+    return response;
+};
+
+const changePassword = async (_id, data) => {
+    const user = await userDao.findUserByCondition(_id);
+    if (_.isNil(user)) return { message: 'User is not in the database' };
+
+    const passwordCompare = await bcrypt.compare(data.oldPassword, user.password);
+    if (!passwordCompare) return { message: 'User or password wrong' };
+
+    const newPassword = await bcrypt.hash(data.newPassword, constants.SALT_ROUNDS);
+
+    const params = {
+        data: {
+            password: newPassword,
+        },
+    };
+
+    const response = await userDao.editUser(user, params.data);
+
+    if (response.modifiedCount > 0) return { message: 'Update success' };
+    return { message: 'Error' };
+};
 
 module.exports = {
     getCurrentUser,
     updateQuizToUser,
     updateLessonToUser,
-}
+    changePassword,
+};

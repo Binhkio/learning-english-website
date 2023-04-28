@@ -1,7 +1,5 @@
-// assets
 import { IconUser, IconBook } from '@tabler/icons';
 
-// constant
 const icons = { IconUser, IconBook };
 
 const manage = {
@@ -16,15 +14,6 @@ const manage = {
             url: '/manage/user',
             icon: icons.IconUser,
             breadcrumbs: true
-            // children: [
-            //     {
-            //         id: 'manageUser1',
-            //         title: 'Quản lý ngừoi dùng',
-            //         type: 'item',
-            //         url: '/manage/user',
-            //         target: true
-            //     },
-            // ]
         },
         {
             id: 'manageQuiz',
