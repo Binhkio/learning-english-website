@@ -35,15 +35,15 @@ const FlipCard = ({ id, imgUrl, meaning, width, height, visible, handleCheckProc
             _id: userData._id,
             ids: isMarked ? userData.lessons.filter(_id => _id !== id) : [...userData.lessons, id]
         }
-        console.log('call api');
-        await api.userApi.bookmarkLesson(payload).then((response) => {
+        try {
+            const response = await api.userApi.bookmarkLesson(payload)
             const resData = response.data.data
             user.setSessionStorage(resData)
             handleCheckProcess(resData)
-        }, (error) => {
-            console.log(error);
-        })
-        setIsMarked(!isMarked)
+            setIsMarked(!isMarked)
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     useEffect(() => {

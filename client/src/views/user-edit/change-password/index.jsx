@@ -48,23 +48,23 @@ export default function ChangePasswordComponent({ ...other }) {
                 newPassword: values.newPassword,
             },
         };
-        await api.userApi
-            .changePassword(payload)
-            .then((response) => {
-                const responseData = response.data.data;
-                setSnackbarMessage(responseData.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-                setStatus({ success: true });
-                setSubmitting(false);
-                navigate(window.location.pathname);
-            })
-            .catch((error) => {
-                setSnackbarMessage(error.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-                setStatus({ success: false });
-                setErrors({ submit: error.message });
-                setSubmitting(false);
-            });
+
+        try {
+            const response = await api.userApi.changePassword(payload)
+            const responseData = response.data.data;
+            setSnackbarMessage(responseData.message);
+            setNotificationState({ ...notificationState, isReloead: true });
+            setStatus({ success: true });
+            setSubmitting(false);
+            navigate(window.location.pathname);
+        } catch (error) {
+            console.error(error);            
+            setSnackbarMessage(error.message);
+            setNotificationState({ ...notificationState, isReloead: true });
+            setStatus({ success: false });
+            setErrors({ submit: error.message });
+            setSubmitting(false);
+        }
     };
 
     return (

@@ -92,10 +92,15 @@ export default function CreateQuizModalButton({handleChangeRow}) {
     const verifyLessonsPromise = lessons.filter((lesson) => {
       return !_.isNil(lesson) && _.keys(lesson).length === 2 && !!lesson.name
     }).map(async (lesson) => {
-      const downloadUrl = await api.firebaseApi.uploadImage(lesson.image)
-      return {
-        ...lesson,
-        image: downloadUrl,
+      try {
+        const downloadUrl = await api.firebaseApi.uploadImage(lesson.image)
+        return {
+          ...lesson,
+          image: downloadUrl,
+        }
+      } catch (error) {
+        console.error(error);
+        return null
       }
     })
     const verifyLessons = await Promise.all(verifyLessonsPromise)
@@ -106,22 +111,21 @@ export default function CreateQuizModalButton({handleChangeRow}) {
         lessons: verifyLessons,
       }
     };
-    await api.quizApi
-      .createQuiz(payload)
-      .then((response) => {
-        const payload = response.data;
-        console.log(payload);
-        handleChangeRow()
-        setOpen(false)
-        setStatus({ success: true });
-        setSubmitting(false);
-        setNotificationState({ ...notificationState, isLogin: true });
-      })
-      .catch((error) => {
-        setStatus({ success: false });
-        setErrors({ submit: error.message });
-        setSubmitting(false);
-      });
+    try {
+      const response = await api.quizApi.createQuiz(payload)
+      const payload = response.data;
+      console.log(payload);
+      handleChangeRow()
+      setOpen(false)
+      setStatus({ success: true });
+      setSubmitting(false);
+      setNotificationState({ ...notificationState, isLogin: true });
+    } catch (error) {
+      console.error(error);
+      setStatus({ success: false });
+      setErrors({ submit: error.message });
+      setSubmitting(false);
+    }
   };
 
   const validateRule = () => {

@@ -139,25 +139,24 @@ function Manage() {
 
     useEffect(() => {
         const getListUser = async () => {
-            await api.adminApi
-                .getListUser()
-                .then((response) => {
-                    const payload = response.data.data;
-                    console.log(payload);
-                    setListUser(payload);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            try {
+                const response = await api.adminApi.getListUser()
+                const payload = response.data.data;
+                setListUser(payload);                
+            } catch (error) {
+                console.error(error);
+            }
         };
         getListUser();
 
         const getQuizInfo = async () => {
-            await api.quizApi.getAllQuizzes().then((response) => {
-                console.log(response);
+            try {
+                const response = await api.quizApi.getAllQuizzes()
                 const payload = response.data.data;
                 setQuizzData(payload);
-            });
+            } catch (error) {
+                console.error(error);                
+            }
         };
 
         getQuizInfo();
@@ -174,37 +173,35 @@ function Manage() {
                 status: row.status === 1 ? 0 : 1,
             },
         };
-        await api.adminApi
-            .editUserData(params)
-            .then((response) => {
-                const payload = response.data.data;
-                setSnackbarMessage(payload.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-                row.status === 1 ? (row.status = 0) : (row.status = 1);
-            })
-            .catch((error) => {
-                setSnackbarMessage(error.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-            });
+        try {
+            const response = await api.adminApi.editUserData(params)
+            const payload = response.data.data;
+            setSnackbarMessage(payload.message);
+            setNotificationState({ ...notificationState, isReloead: true });
+            row.status === 1 ? (row.status = 0) : (row.status = 1);
+        } catch (error) {
+            console.error(error);
+            setSnackbarMessage(error.message);
+            setNotificationState({ ...notificationState, isReloead: true });
+        }
     };
 
     const handleDeleteUser = async (row) => {
         const params = {
             _id: row._id,
         };
-        await api.adminApi
-            .deleteUser(params)
-            .then((response) => {
-                const payload = response.data.data;
-                setSnackbarMessage(payload.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-                const filteredArray = listUser.filter((item) => item._id !== row._id);
-                setListUser(filteredArray);
-            })
-            .catch((error) => {
-                setSnackbarMessage(error.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-            });
+        try {
+            const response = await api.adminApi.deleteUser(params)
+            const payload = response.data.data;
+            setSnackbarMessage(payload.message);
+            setNotificationState({ ...notificationState, isReloead: true });
+            const filteredArray = listUser.filter((item) => item._id !== row._id);
+            setListUser(filteredArray);
+        } catch (error) {
+            console.error(error);
+            setSnackbarMessage(error.message);
+            setNotificationState({ ...notificationState, isReloead: true });
+        }
     };
 
     return (

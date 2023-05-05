@@ -80,26 +80,27 @@ export function QuizThumbnail({ quiz }) {
             },
         };
 
-        await api.adminApi
-            .editUserData(payload)
-            .then((response) => {
-                setOpen(false);
-                setNotificationState({ ...notificationState, isReloead: true });
-                setSnackbarMessage('Update success');
-                reloeadCurrentUser()
-            })
-            .catch((error) => {
-                setOpen(false);
-                setNotificationState({ ...notificationState, isReloead: true });
-                setSnackbarMessage(error.message);
-            });
+        try {
+            await api.adminApi.editUserData(payload)
+            setOpen(false);
+            setNotificationState({ ...notificationState, isReloead: true });
+            setSnackbarMessage('Update success');
+            reloeadCurrentUser()
+        } catch (error) {
+            setOpen(false);
+            setNotificationState({ ...notificationState, isReloead: true });
+            setSnackbarMessage(error.message);
+        }
     };
 
     const reloeadCurrentUser = async () => {
-        await api.userApi.getCurrentUser({_id: userData._id}).then((response) => {
-          const payload = response.data.data
-          user.setSessionStorage(payload.user);
-        })
+        try {
+            const response = await api.userApi.getCurrentUser({_id: userData._id})
+            const payload = response.data.data
+            user.setSessionStorage(payload.user);
+        } catch (error) {
+            console.error(error)
+        }
       }
 
     if (_.isNil(quiz)) return <></>;
@@ -110,18 +111,16 @@ export function QuizThumbnail({ quiz }) {
             _id: userData._id,
             ids: marked ? userData.quizzes.filter((q) => q !== quiz._id) : [...userData.quizzes, quiz._id],
         };
-        await api.userApi.bookmarkQuiz(payload).then(
-            (response) => {
-                const resData = response.data.data;
-                user.setSessionStorage(resData);
-                setNotificationState({ ...notificationState, isReloead: true });
-                setSnackbarMessage('Update success');
-            },
-            (error) => {
-                console.log(error);
-            }
-        );
-        setMarked(!marked);
+        try {
+            const response = await api.userApi.bookmarkQuiz(payload)
+            const resData = response.data.data;
+            user.setSessionStorage(resData);
+            setNotificationState({ ...notificationState, isReloead: true });
+            setSnackbarMessage('Update success');
+            setMarked(!marked);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const handleViewQuiz = () => {

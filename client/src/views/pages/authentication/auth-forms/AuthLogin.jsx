@@ -61,25 +61,25 @@ const LoginForm = ({ ...others }) => {
 
   const handleSubmitForm = async (values, { setErrors, setStatus, setSubmitting }) => {
     const payload = { email: values.email, password: values.password };
-    await api.authApi
-      .login(payload)
-      .then((response) => {
-        const payload = response.data.data;
-        token.setSessionStorage(payload.jsonToken);
-        user.setSessionStorage(payload.user);
-        setStatus({ success: true });
-        setSubmitting(false);
-        setNotificationState({ ...notificationState, isLogin: true });
-        setSnackbarMessage(payload.message);
-        navigate('/');
-      })
-      .catch((error) => {
-        // setStatus({ success: false });
-        // setErrors({ submit: error.message });
-        // setSubmitting(false);
-        setNotificationState({ ...notificationState, isLogin: true });
-        setSnackbarMessage(error.message);
-      });
+    try {
+      const response = await api.authApi.login(payload)
+      const payload = response.data.data;
+      token.setSessionStorage(payload.jsonToken);
+      user.setSessionStorage(payload.user);
+      setStatus({ success: true });
+      setSubmitting(false);
+      setNotificationState({ ...notificationState, isLogin: true });
+      setSnackbarMessage(payload.message);
+      navigate('/');
+      
+    } catch (error) {
+      console.error(error);
+      // setStatus({ success: false });
+      // setErrors({ submit: error.message });
+      // setSubmitting(false);
+      setNotificationState({ ...notificationState, isLogin: true });
+      setSnackbarMessage(error.message);
+    }
   };
 
   const validateRule = () => {

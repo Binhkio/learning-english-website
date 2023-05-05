@@ -69,33 +69,34 @@ export default function UserInformationForm({ ...other }) {
       },
     };
 
-    await api.adminApi
-      .editUserData(payload)
-      .then((response) => {
-        const responseData = response.data.data;
-        setSnackbarMessage(responseData.message);
-        setNotificationState({ ...notificationState, isReloead: true });
-        reloeadCurrentUser()
-        setStatus({ success: true });
-        setSubmitting(false);
-        navigate(window.location.pathname);
-      })
-      .catch((error) => {
-        setSnackbarMessage(error.message);
-        setNotificationState({ ...notificationState, isReloead: true });
-        setStatus({ success: false });
-        setErrors({ submit: error.message });
-        setSubmitting(false);
-      });
+    try {
+      const response = await api.adminApi.editUserData(payload)
+      const responseData = response.data.data;
+      setSnackbarMessage(responseData.message);
+      setNotificationState({ ...notificationState, isReloead: true });
+      reloeadCurrentUser()
+      setStatus({ success: true });
+      setSubmitting(false);
+      navigate(window.location.pathname);
+    } catch (error) {
+      console.error(error);      
+      setSnackbarMessage(error.message);
+      setNotificationState({ ...notificationState, isReloead: true });
+      setStatus({ success: false });
+      setErrors({ submit: error.message });
+      setSubmitting(false);
+    }
   };
 
   const reloeadCurrentUser = async () => {
-    await api.userApi.getCurrentUser({_id: userData._id}).then((response) => {
-      console.log(response)
+    try {
+      const response = await api.userApi.getCurrentUser({_id: userData._id})
       const payload = response.data.data
       token.setSessionStorage(payload.jsonToken);
       user.setSessionStorage(payload.user);
-    })
+    } catch (error) {
+      console.error(error); 
+    }
   }
 
   const setState = (editText) => {

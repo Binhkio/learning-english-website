@@ -24,23 +24,24 @@ const RowComponent = (props) => {
   const handleDeleteQuiz = async (id) => {
     const payload = { _id: id }
     console.log(payload);
-    await api.quizApi.deleteQuiz(payload).then((response) => {
-      console.log(response);
+
+    try {
+      const response = await api.quizApi.deleteQuiz(payload)
       handleChangeRow()
-    }, (error) => {
-      console.log(error);
-    })
+    } catch (error) {
+      console.error(error); 
+    }
   }
 
   const handleDeleteLesson = async (id) => {
     const payload = { _id: id }
-    console.log(payload);
-    await api.lessonAPi.deleteLesson(payload).then((response) => {
-      handleChangeRow()
-      console.log(response);
-    }, (error) => {
-      console.log(error);
-    })
+
+    try {
+      const response = await api.lessonAPi.deleteLesson(payload)
+      handleChangeRow() 
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const handleStatusChange = async () => {
@@ -49,12 +50,13 @@ const RowComponent = (props) => {
       _id: row._id,
       status: !row.status,
     }
-    await api.quizApi.updateQuiz(payload).then((response) => {
+
+    try {
+      const response = await api.quizApi.updateQuiz(payload)
       handleChangeRow()
-      console.log(response);
-    }, (error) => {
-      console.log(error);
-    })
+    } catch (error) {
+      console.error(error);      
+    }
   }
 
   return (
@@ -186,12 +188,17 @@ function QuizManage() {
   };
 
   useEffect(() => {
-    api.quizApi.getAllQuizzes().then((response) => {
-      const quizzesData = response.data.data
-      setQuizzes(quizzesData)
-    }, (error) => {
-      console.log(error);
-    })
+    async function getQuizzes() {
+      try {
+        const response = await api.quizApi.getAllQuizzes()
+        const quizzesData = response.data.data
+        setQuizzes(quizzesData)
+      } catch (error) {
+        console.error(error);        
+      }
+    }
+
+    getQuizzes()
   }, [render])
 
   return (
