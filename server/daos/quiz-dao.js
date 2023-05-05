@@ -1,5 +1,6 @@
 const Quiz = require('../models/quiz');
 const { ObjectId } = require('mongoose').Types;
+const QuizEntity = require('../entities/quiz')
 
 /**
  * Finds a quiz in the database based on a given condition.
@@ -27,14 +28,8 @@ const findLessonByArrayId = async (ids) => {
 };
 
 const insertData = async (condition) => {
-  const quiz = await Quiz.create({
-    name: condition.name,
-    creator: condition.creator,
-    lessons: condition.lessons,
-    status: condition.status,
-  });
-
-  return quiz;
+  const quiz = new QuizEntity(condition)
+  return await Quiz.create(quiz);
 }
 
 const deleteQuiz = async (condition) => {

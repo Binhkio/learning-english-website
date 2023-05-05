@@ -1,5 +1,6 @@
 const Lesson = require('../models/lesson');
 const { ObjectId } = require('mongoose').Types;
+const LessonEntity = require('../entities/lesson')
 
 const findLessonByCondition = async (condition) => {
   if (ObjectId.isValid(condition)) {
@@ -16,12 +17,8 @@ const findLessonByCondition = async (condition) => {
 };
 
 const insertData = async (condition) => {
-  const lesson = await Lesson.create({
-    name: condition.name,
-    image: condition.image,
-    status: condition.status,
-  });
-  return lesson;
+  const lesson = new LessonEntity(condition)
+  return await Lesson.create(lesson);
 }
 
 const listLessonId = async () => {

@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const { ObjectId } = require('mongoose').Types;
+const UserEntity = require('../entities/user')
 
 /**
  * Finds a user in the database based on a given condition.
@@ -36,15 +37,8 @@ const listUserByCondition = async (condition) => {
 }
 
 const insertData = async (condition) => {
-  const user = await User.create({
-    name: condition.name,
-    email: condition.email,
-    password: condition.password,
-    role: condition.role,
-    status: condition.status
-  });
-
-  return user
+  const user = new UserEntity(condition)
+  return await User.create(user);
 };
 
 const deleteUser = async (condition) => {
