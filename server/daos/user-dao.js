@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const { ObjectId } = require('mongoose').Types;
 const UserEntity = require('../entities/user')
+const CustomApiMessage = require('../errors/CustomApiMessage')
+const httpCode = require('../utils/httpCode');
 
 /**
  * Finds a user in the database based on a given condition.
@@ -43,13 +45,15 @@ const insertData = async (condition) => {
 
 const deleteUser = async (condition) => {
   const result = await User.deleteOne(condition)
-  return result
+  if (result.deletedCount <= 0)
+    throw new CustomApiMessage(httpCode.BAD_REQUEST, {}, 'Error')
 }
 
 const editUser = async (user, newValue) => {
   const {_id} = user
   const result = await User.updateOne({ _id: _id }, newValue)
-  return result
+  if (result.modifiedCount <= 0)
+    throw new CustomApiMessage(httpCode.BAD_REQUEST, {}, 'Error')
 }
 
 const updateLessonToUser = async (_id, ids) => {
