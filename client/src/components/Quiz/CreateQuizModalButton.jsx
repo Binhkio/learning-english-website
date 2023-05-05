@@ -103,18 +103,17 @@ export default function CreateQuizModalButton({handleChangeRow}) {
         return null
       }
     })
-    const verifyLessons = await Promise.all(verifyLessonsPromise)
-    const payload = {
-      _id: user.getSessionStorage()._id,
-      data: {
-        name: values.quizname,
-        lessons: verifyLessons,
-      }
-    };
+
     try {
+      const verifyLessons = await Promise.all(verifyLessonsPromise)
+      const payload = {
+        _id: user.getSessionStorage()._id,
+        data: {
+          name: values.quizname,
+          lessons: verifyLessons,
+        }
+      };
       const response = await api.quizApi.createQuiz(payload)
-      const payload = response.data;
-      console.log(payload);
       handleChangeRow()
       setOpen(false)
       setStatus({ success: true });

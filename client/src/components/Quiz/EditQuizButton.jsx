@@ -122,18 +122,17 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
         return null
       }
     })
-    const verifyLessons = await Promise.all(verifyLessonsPromise)
-    const payload = {
-      user_id: user.getSessionStorage()._id,
-      _id: quiz_id,
-      name: quizname,
-      lessons: verifyLessons,
-      status: status,
-    };
-
+    
     try {
+      const verifyLessons = await Promise.all(verifyLessonsPromise)
+      const payload = {
+        user_id: user.getSessionStorage()._id,
+        _id: quiz_id,
+        name: quizname,
+        lessons: verifyLessons,
+        status: status,
+      };
       const response = await api.quizApi.updateQuiz(payload)
-      const payload = response.data;
       handleChangeRow()
       setOpen(false)
       setStatus({ success: true });

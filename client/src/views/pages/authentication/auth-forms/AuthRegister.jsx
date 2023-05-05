@@ -47,12 +47,12 @@ const RegisterForm = ({ ...others }) => {
     };
 
     const handleSubmitForm = async (values, { setErrors, setStatus, setSubmitting }) => {
-        const payload = { email: values.email, name: values.username, password: values.password };
         try {
+            const payload = { email: values.email, name: values.username, password: values.password };
             const response = await api.authApi.register(payload)
-            const payload = response.data.data;
-            token.setSessionStorage(payload.jsonToken);
-            user.setSessionStorage(payload.user);
+            const resData = response.data.data;
+            token.setSessionStorage(resData.jsonToken);
+            user.setSessionStorage(resData.user);
             setStatus({ success: true });
             setSubmitting(false);
             setNotificationState({ ...notificationState, isLogin: true });
