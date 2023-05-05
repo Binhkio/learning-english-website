@@ -5,8 +5,8 @@ const lessonValidate = require('../validations/lesson')
 const validationMiddleware = require('../middlewares/validate')
 const lessonController = require('../controllers/lesson')
 
-Router.post('/', auth.authenticate, validationMiddleware(lessonValidate.lessonRequest()), lessonController.storeLessons)
-Router.post('/get-info', auth.authenticate, validationMiddleware(lessonValidate.lessonGetInfoRequest()) ,lessonController.getLesson)
-Router.post('/delete', auth.authenticateAdmin, validationMiddleware(lessonValidate.lessonDeleteRequest()) ,lessonController.deleteLesson)
+Router.post('/', auth.currentUserAuth, validationMiddleware(lessonValidate.lessonRequest()), lessonController.storeLessons)
+Router.post('/get-info', auth.currentUserAuth, validationMiddleware(lessonValidate.lessonGetInfoRequest()) ,lessonController.getLesson)
+Router.post('/delete', auth.adminAuth, validationMiddleware(lessonValidate.lessonDeleteRequest()) ,lessonController.deleteLesson)
 
 module.exports = Router

@@ -1,11 +1,12 @@
 class CustomError extends Error {
-    constructor(code, ...params) {
-      super(...params);
+    constructor(code, payload) {
+      const { data, message } = payload
+      super(message);
       if (Error.captureStackTrace) {
         Error.captureStackTrace(this, CustomError);
       }
-      this.code = code;
+      this.status = code;
     }
   }
 
-  module.exports = CustomError;
+module.exports = CustomError;

@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const constants = require('../utils/constants');
 const _ = require('lodash')
+const CustomApiMessage = require('../errors/CustomApiMessage')
+const httpCode = require('../utils/httpCode');
 
 const generateAccessToken = async (email, userId, role) => {
   const accessToken = await jwt.sign({ email, userId, role }, process.env.JWT_SECRET_KEY, {
@@ -52,8 +54,17 @@ const register = async (name, email, password, role) => {
   return response;
 };
 
+const verifyCurrentUser = async (param, isAdmin = false) => {
+  const currentUser = await userDao.findUserByCondition(param);
+  if (_.isNil(currentUser))
+    throw new CustomApiMessage(httpCode.BAD_REQUEST, currentUser, '')
+  if (isAdmin && currentUser.role !== constants.ADMIN)
+    throw new CustomApiMessage(httpCode.BAD_REQUEST, {}, 'Not a admin')
+}
+
 module.exports = {
   login,
   register,
   generateAccessToken,
+  verifyCurrentUser
 };
