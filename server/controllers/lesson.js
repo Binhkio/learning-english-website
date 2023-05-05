@@ -2,6 +2,7 @@ const lessonService = require('../services/lesson')
 const _ = require('lodash')
 const helper = require('../utils/helper')
 const httpCode = require('../utils/httpCode')
+const asyncMiddleware = require('../middlewares/asyncMiddleware')
 
 const storeLessons = async (request, response) => {
     const { _id, data } = request.body
@@ -22,7 +23,7 @@ const deleteLesson = async (request, response) => {
 }
 
 module.exports = {
-    storeLessons,
-    getLesson,
-    deleteLesson,
+    storeLessons: asyncMiddleware(storeLessons),
+    getLesson: asyncMiddleware(getLesson),
+    deleteLesson: asyncMiddleware(deleteLesson)
 }

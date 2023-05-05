@@ -1,6 +1,5 @@
 class CustomError extends Error {
-    constructor(code, payload) {
-      const { data, message } = payload
+    constructor(code, {data, message}) {
       super(message);
       if (Error.captureStackTrace) {
         Error.captureStackTrace(this, CustomError);
