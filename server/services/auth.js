@@ -24,12 +24,12 @@ const verifyAccessToken = async (accessToken) => {
 
 const login = async (email, password) => {
     const user = await userDao.findUserByCondition({ email });
-    if (_.isNil(user)) throw new CustomApiMessage(httpCode.BAD_REQUEST, {}, 'User or password wrong');
+    if (_.isNil(user)) throw new CustomApiMessage(httpCode.USER_NOT_FOUND, {}, 'User or password wrong');
 
     if (user.status === 0) throw new CustomApiMessage(httpCode.BAD_REQUEST, {}, 'User has been block, please contact to admin to unlock account');
 
     const passwordCompare = await bcrypt.compare(password, user.password);
-    if (!passwordCompare) throw new CustomApiMessage(httpCode.BAD_REQUEST, {}, 'User or password wrong');
+    if (!passwordCompare) throw new CustomApiMessage(httpCode.USER_NOT_FOUND, {}, 'User or password wrong');
 
     const userId = user._id.toString();
     const role = user.role;

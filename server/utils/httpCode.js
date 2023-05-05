@@ -8,6 +8,10 @@ const httpCode = {
     USER_NOT_FOUND: 1001,
     WRONG_PASSWORD: 1002,
     USER_EXISTS: 1003,
-}
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    TOO_MANY_REQUESTS: 429,
+    INTERNAL_SERVER_ERROR: 500,
+};
 
-module.exports = httpCode
+module.exports = httpCode;
