@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import user from 'utils/user';
 import NotificationComponent from 'components/notification';
 import { useRef } from 'react';
+import handlePayload from 'utils/handle-payload';
 
 const LoginForm = ({ ...others }) => {
     const notiRef = useRef();
@@ -44,17 +45,17 @@ const LoginForm = ({ ...others }) => {
         try {
             const response = await api.authApi.login(params);
             const payload = response.data;
-
-            if (payload.code === 200) {
-                token.setSessionStorage(payload.jsonToken);
-                user.setSessionStorage(payload.user);
+            const handlePayloadData = handlePayload(payload)
+            if (handlePayloadData.code === 200 || handlePayloadData.code === 201) {
+                token.setSessionStorage(handlePayloadData.data.jsonToken);
+                user.setSessionStorage(handlePayloadData.data.user);
                 setStatus({ success: true });
                 setSubmitting(false);
                 navigate('/');
             } else {
-                notiRef.current.setState(payload.message);
+                notiRef.current.setState(handlePayloadData.message);
                 setStatus({ success: false });
-                setErrors({ submit: payload.message });
+                setErrors({ submit: handlePayloadData.message });
                 setSubmitting(false);
             }
         } catch (error) {

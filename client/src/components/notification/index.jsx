@@ -20,7 +20,6 @@ const NotificationComponent = forwardRef((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         setState(message) {
-            console.log(message)
             setSnackbarMessage(message)
             setNotificationState({ ...notificationState, isLogin: true });
         },
