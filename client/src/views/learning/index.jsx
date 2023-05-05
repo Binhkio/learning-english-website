@@ -1,9 +1,9 @@
 import { Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import api from 'api';
+import QuizThumbnail from 'components/Quiz/QuizThumbnail';
 import { useEffect, useState } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
-import { QuizThumbnail } from './QuizThumbnail';
 
 function Learning() {
     const [quizzes, setQuizzes] = useState([])

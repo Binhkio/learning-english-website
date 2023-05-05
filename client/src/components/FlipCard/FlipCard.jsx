@@ -1,23 +1,9 @@
 import { useEffect, useState } from 'react'
 import './style.css'
-import { Box, IconButton, Tooltip } from '@mui/material'
-import { BookmarkAddedRounded, BookmarkBorderRounded } from '@mui/icons-material';
+import { Box } from '@mui/material'
 import api from 'api';
 import user from 'utils/user';
-
-const Mark = ({isMarked, handleBookmark}) => (
-    <Tooltip
-        title={isMarked?"Unmark":"Mark"}
-    >
-        <IconButton
-            style={{color: `${isMarked?'#00ffff':'#f6f7fb'}`}}
-            size="12px"
-            onClick={handleBookmark}
-        >
-            {isMarked?(<BookmarkAddedRounded/>):(<BookmarkBorderRounded/>)}
-        </IconButton>
-    </Tooltip>
-)
+import Mark from './Mark/Mark';
 
 const FlipCard = ({ id, imgUrl, meaning, width, height, visible, handleCheckProcess }) => {
     const [isFliped, setIsFliped] = useState(false)

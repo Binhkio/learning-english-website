@@ -1,12 +1,12 @@
 import MainCard from 'ui-component/cards/MainCard';
-import CreateQuizModalButton from './CreateQuizModalButton';
+import CreateQuizModalButton from '../../components/Quiz/CreateQuizModalButton';
 import { Box, Stack } from '@mui/system';
 import { useEffect, useState } from 'react';
 import api from 'api';
 import { Collapse, IconButton, Paper, Snackbar, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { DeleteOutline, EditOutlined, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import EditQuizButton from './EditQuizButton';
 import user from 'utils/user';
+import EditQuizButton from 'components/Quiz/EditQuizButton';
 
 const Title = ({handleChangeRow}) => (
   <Stack direction="row" alignItems="center" justifyContent="space-between">

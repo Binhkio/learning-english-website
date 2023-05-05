@@ -40,7 +40,7 @@ const Transition = forwardRef(function Transition(props, ref) {
     );
 });
 
-export function QuizThumbnail({ quiz }) {
+export default function QuizThumbnail({ quiz }) {
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
