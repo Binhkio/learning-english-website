@@ -1,7 +1,7 @@
 const userService = require('../services/user')
 const helper = require('../utils/helper')
 const httpCode = require('../utils/httpCode')
-const asyncMiddleware = require('../middlewares/asyncMiddleware')
+const asyncWrapper = require('../helpers/asyncWrapper')
 
 const getCurrentUser = async (request, response) => {
     const { _id } = request.body
@@ -28,9 +28,13 @@ const changePassword = async (request, response) => {
     return response.send(helper.convertApi(payload, httpCode.CREATED_SUCCESS, ''))
 }
 
-module.exports = {
-    getCurrentUser: asyncMiddleware(getCurrentUser),
-    updateQuizToUser: asyncMiddleware(updateQuizToUser),
-    updateLessonToUser: asyncMiddleware(updateLessonToUser),
-    changePassword: asyncMiddleware(changePassword)
+const userController = {
+    getCurrentUser,
+    updateQuizToUser,
+    updateLessonToUser,
+    changePassword
 }
+
+const userControllerWrapper = asyncWrapper(userController, Object.keys(userController))
+
+module.exports = userControllerWrapper

@@ -1,7 +1,7 @@
 const adminService = require('../services/admin')
 const helper = require('../utils/helper')
 const httpCode = require('../utils/httpCode')
-const asyncMiddleware = require('../middlewares/asyncMiddleware')
+const asyncWrapper = require('../helpers/asyncWrapper')
 
 const getListUser = async (request, response) => {
     const payload = await adminService.getAllUser()
@@ -20,8 +20,12 @@ const editStatusUser = async (request, response) => {
     return response.send(helper.convertApi(payload, httpCode.SUCCESS, ''))
 }
 
-module.exports = {
-    getListUser: asyncMiddleware(getListUser),
-    deleteUser: asyncMiddleware(deleteUser),
-    editStatusUser: asyncMiddleware(editStatusUser)
+const adminController = {
+    getListUser,
+    deleteUser,
+    editStatusUser
 }
+
+const wrappedFunctions = asyncWrapper(adminController, Object.keys(adminController))
+
+module.exports = wrappedFunctions
