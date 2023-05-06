@@ -39,14 +39,15 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
   useEffect(() => {
     const getQuizInfo = async () => {
       const payload = {_id: quiz_id}
-      api.quizApi.getQuizInfo(payload).then((response) => {
+      try {
+        const response = api.quizApi.getQuizInfo(payload)
         const data = response.data.data
         setQuizname(data.name)
         setStatus(data.status)
         setLessons(data.lessons)
-      }, (error) => {
-        console.log(error);
-      })
+      } catch (error) {
+        console.error(error); 
+      }
     }
 
     getQuizInfo()
@@ -110,35 +111,39 @@ export default function EditQuizButton({quiz_id, default_name, default_lessons, 
       return !_.isNil(lesson) && _.keys(lesson).length >= 2 && !!lesson.name
     }).map(async (lesson) => {
       if(!_.isNil(lesson._id)) return lesson
-      const downloadUrl = await api.firebaseApi.uploadImage(lesson.image)
-      return {
-        ...lesson,
-        image: downloadUrl,
+      try {
+        const downloadUrl = await api.firebaseApi.uploadImage(lesson.image)
+        return {
+          ...lesson,
+          image: downloadUrl,
+        }
+      } catch (error) {
+        console.error(error);
+        return null
       }
     })
-    const verifyLessons = await Promise.all(verifyLessonsPromise)
-    const payload = {
-      user_id: user.getSessionStorage()._id,
-      _id: quiz_id,
-      name: quizname,
-      lessons: verifyLessons,
-      status: status,
-    };
-    await api.quizApi
-      .updateQuiz(payload)
-      .then((response) => {
-        const payload = response.data;
-        handleChangeRow()
-        setOpen(false)
-        setStatus({ success: true });
-        setSubmitting(false);
-        setNotificationState({ ...notificationState, isLogin: true });
-      })
-      .catch((error) => {
-        setStatus({ success: false });
-        setErrors({ submit: error.message });
-        setSubmitting(false);
-      });
+    
+    try {
+      const verifyLessons = await Promise.all(verifyLessonsPromise)
+      const payload = {
+        user_id: user.getSessionStorage()._id,
+        _id: quiz_id,
+        name: quizname,
+        lessons: verifyLessons,
+        status: status,
+      };
+      const response = await api.quizApi.updateQuiz(payload)
+      handleChangeRow()
+      setOpen(false)
+      setStatus({ success: true });
+      setSubmitting(false);
+      setNotificationState({ ...notificationState, isLogin: true });
+    } catch (error) {
+      console.error(error);
+      setStatus({ success: false });
+      setErrors({ submit: error.message });
+      setSubmitting(false);
+    }
   };
 
   const validateRule = () => {

@@ -44,15 +44,13 @@ export function QuizLearning() {
     useEffect(() => {
         const getQuizInfo = async () => {
             const payload = { _id: quiz_id };
-            await api.quizApi.getQuizInfo(payload).then(
-                (response) => {
-                    const resData = response.data.data;
-                    setQuiz(resData);
-                },
-                (error) => {
-                    console.log(error);
-                }
-            );
+            try {
+                const response = await api.quizApi.getQuizInfo(payload)
+                const resData = response.data.data;
+                setQuiz(resData);
+            } catch (error) {
+                console.error(error);                
+            }
         };
 
         getQuizInfo();
