@@ -10,161 +10,50 @@ import MainCard from 'ui-component/cards/MainCard';
 import { useEffect } from 'react';
 import api from 'api';
 import { useState } from 'react';
-import { Snackbar, Switch, Typography } from '@mui/material';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import IconButton from '@mui/material/IconButton';
-import Collapse from '@mui/material/Collapse';
-import { Box } from '@mui/system';
-import userUtils from 'utils/user';
-
-const QuizzListComponent = (props) => {
-    const { row, quizzData, handleStatusChange, handleDeleteUser } = props;
-    const [open, setOpen] = useState(false);
-
-    const handleCheckProcess = (quiz) => {
-        if (row.quizzes.includes(quiz._id))
-            return 'ĐÃ HỌC'
-        return 'CHƯA HỌC'
-    }
-
-    return (
-        <>
-            <TableRow
-                key={row.name}
-                sx={{
-                    '&:last-child td, &:last-child th': { border: 0 },
-                    '& > *': { borderBottom: 'unset' },
-                }}>
-                <TableCell>
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => setOpen(!open)}>
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                </TableCell>
-                <TableCell
-                    component="th"
-                    scope="row">
-                    {row.email}
-                </TableCell>
-                <TableCell align="right">{row.name}</TableCell>
-                <TableCell align="right">
-                    <Switch
-                        checked={row.status === 1 ? true : false}
-                        onClick={() => handleStatusChange(row)}
-                        sx={{
-                            '& .MuiSwitch-track': {
-                                bgcolor: 'grey.500',
-                            },
-                            '& .MuiSwitch-thumb': {
-                                bgcolor: row.status === 1 ? true : false ? 'primary.main' : 'grey.500',
-                            },
-                            m: 1,
-                        }}
-                        inputProps={{ 'aria-label': 'controlled' }}
-                        label="On"
-                    />
-                </TableCell>
-                <TableCell align="right">
-                    <Typography
-                        component="a"
-                        variant="p"
-                        sx={{
-                            cursor: 'pointer',
-                        }}
-                        onClick={() => handleDeleteUser(row)}>
-                        Delete
-                    </Typography>
-                </TableCell>
-            </TableRow>
-            <TableRow>
-                <TableCell
-                    style={{ paddingBottom: 0, paddingTop: 0 }}
-                    colSpan={6}>
-                    <Collapse
-                        in={open}
-                        timeout="auto"
-                        unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <Typography
-                                component="div"
-                                variant="h4"
-                                gutterBottom>
-                                Learning's History
-                            </Typography>
-                            <Table
-                                size="small"
-                                aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Quiz's name</TableCell>
-                                        <TableCell>Process</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {quizzData.map((item) => (
-                                        <TableRow key={item._id}>
-                                            <TableCell
-                                                component="th"
-                                                scope="row">
-                                                { item.name }
-                                            </TableCell>
-                                            <TableCell>{handleCheckProcess(item)}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </>
-    );
-};
+import { Typography } from '@mui/material';
+import QuizzListComponent from './quiz-list';
+import NotificationComponent from 'components/notification';
+import handlePayload from 'utils/handle-payload';
+import { useRef } from 'react';
 
 function Manage() {
-    const [listUser, setListUser] = useState([]);
-    const [notificationState, setNotificationState] = useState({
-        isReloead: false,
-        vertical: 'top',
-        horizontal: 'right',
-    });
-    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const notiRef = useRef();
 
-    const { isReloead, vertical, horizontal } = notificationState;
+    const [listUser, setListUser] = useState([]);
 
     const [quizzData, setQuizzData] = useState([]);
 
     useEffect(() => {
         const getListUser = async () => {
-            await api.adminApi
-                .getListUser()
-                .then((response) => {
-                    const payload = response.data.data;
-                    console.log(payload);
-                    setListUser(payload);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            try {
+                const response = await api.adminApi.getListUser();
+                const payload = handlePayload(response.data);
+                setListUser(payload.data);
+            } catch (error) {
+                console.log(error);
+            }
         };
         getListUser();
 
         const getQuizInfo = async () => {
-            await api.quizApi.getAllQuizzes().then((response) => {
-                console.log(response);
-                const payload = response.data.data;
-                setQuizzData(payload);
-            });
+            try {
+                const response = await api.quizApi.getAllQuizzes();
+                const payload = handlePayload(response.data);
+                setQuizzData(payload.data);
+            } catch (error) {
+                console.log(error);
+            }
         };
 
         getQuizInfo();
     }, []);
 
-    const handleCloseNotification = () => {
-        setNotificationState({ ...notificationState, isReloead: false });
+    const handleChangeListUser = (row) => {
+        const newListUser = listUser.map((item) => {
+            if (item._id === row._id) item.status = row.status;
+            return item;
+        });
+        setListUser(newListUser);
     };
 
     const handleStatusChange = async (row) => {
@@ -174,37 +63,33 @@ function Manage() {
                 status: row.status === 1 ? 0 : 1,
             },
         };
-        await api.adminApi
-            .editUserData(params)
-            .then((response) => {
-                const payload = response.data.data;
-                setSnackbarMessage(payload.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-                row.status === 1 ? (row.status = 0) : (row.status = 1);
-            })
-            .catch((error) => {
-                setSnackbarMessage(error.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-            });
+
+        try {
+            const response = await api.adminApi.editUserData(params);
+            const payload = handlePayload(response.data);
+            row.status === 1 ? (row.status = 0) : (row.status = 1);
+            handleChangeListUser(row);
+
+            let notiText = '';
+            row.status === 1 ? (notiText = 'User is available') : (notiText = 'User is now not able to use this app');
+            notiRef.current.setState(notiText);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleDeleteUser = async (row) => {
         const params = {
             _id: row._id,
         };
-        await api.adminApi
-            .deleteUser(params)
-            .then((response) => {
-                const payload = response.data.data;
-                setSnackbarMessage(payload.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-                const filteredArray = listUser.filter((item) => item._id !== row._id);
-                setListUser(filteredArray);
-            })
-            .catch((error) => {
-                setSnackbarMessage(error.message);
-                setNotificationState({ ...notificationState, isReloead: true });
-            });
+
+        try {
+            const response = await api.adminApi.deleteUser(params);
+            const payload = handlePayload(response.data);
+            notiRef.current.setState(payload.data.message);
+            const filteredArray = listUser.filter((item) => item._id !== row._id);
+            setListUser(filteredArray);
+        } catch (error) {}
     };
 
     return (
@@ -237,13 +122,7 @@ function Manage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Snackbar
-                        anchorOrigin={{ vertical, horizontal }}
-                        open={isReloead}
-                        onClose={handleCloseNotification}
-                        message={snackbarMessage}
-                        key={vertical + horizontal}
-                    />
+                    <NotificationComponent ref={notiRef} />
                 </>
             ) : (
                 <Typography

@@ -1,6 +1,6 @@
 class CustomError extends Error {
-    constructor(code, ...params) {
-      super(...params);
+    constructor(code, {data, message}) {
+      super(message)
       if (Error.captureStackTrace) {
         Error.captureStackTrace(this, CustomError);
       }
@@ -8,4 +8,4 @@ class CustomError extends Error {
     }
   }
 
-  module.exports = CustomError;
+module.exports = CustomError;

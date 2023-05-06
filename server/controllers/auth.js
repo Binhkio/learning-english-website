@@ -2,6 +2,7 @@ const authService = require('../services/auth')
 const httpCode = require('../utils/httpCode')
 const helper = require('../utils/helper')
 const constants = require('../utils/constants')
+const asyncMiddleware = require('../middlewares/asyncMiddleware')
 
 const login = async (request, response) => {
     const {email, password} = request.body
@@ -24,7 +25,7 @@ const registerAdmin = async(request, response) => {
 }
 
 module.exports = {
-    login,
-    register,
-    registerAdmin
+    login: asyncMiddleware(login),
+    register: asyncMiddleware(register),
+    registerAdmin: asyncMiddleware(registerAdmin)
 }
