@@ -2,7 +2,7 @@ const lessonService = require('../services/lesson')
 const _ = require('lodash')
 const helper = require('../utils/helper')
 const httpCode = require('../utils/httpCode')
-const asyncMiddleware = require('../middlewares/asyncMiddleware')
+const asyncWrapper = require('../helpers/asyncWrapper')
 
 const storeLessons = async (request, response) => {
     const { _id, data } = request.body
@@ -22,8 +22,12 @@ const deleteLesson = async (request, response) => {
     return response.send(helper.convertApi(payload, httpCode.SUCCESS, ''))
 }
 
-module.exports = {
-    storeLessons: asyncMiddleware(storeLessons),
-    getLesson: asyncMiddleware(getLesson),
-    deleteLesson: asyncMiddleware(deleteLesson)
+const lessonController = {
+    storeLessons,
+    getLesson,
+    deleteLesson
 }
+
+const lessonControllerWrapper = asyncWrapper(lessonController, Object.keys(lessonController))
+
+module.exports = lessonControllerWrapper

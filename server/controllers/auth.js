@@ -2,7 +2,7 @@ const authService = require('../services/auth')
 const httpCode = require('../utils/httpCode')
 const helper = require('../utils/helper')
 const constants = require('../utils/constants')
-const asyncMiddleware = require('../middlewares/asyncMiddleware')
+const asyncWrapper = require('../helpers/asyncWrapper')
 
 const login = async (request, response) => {
     const {email, password} = request.body
@@ -24,8 +24,12 @@ const registerAdmin = async(request, response) => {
     return response.send(helper.convertApi(payload, httpCode.CREATED_SUCCESS, ''))
 }
 
-module.exports = {
-    login: asyncMiddleware(login),
-    register: asyncMiddleware(register),
-    registerAdmin: asyncMiddleware(registerAdmin)
+const authController = {
+    login,
+    register,
+    registerAdmin
 }
+
+const authControllerWrapper = asyncWrapper(authController, Object.keys(authController))
+
+module.exports = authControllerWrapper

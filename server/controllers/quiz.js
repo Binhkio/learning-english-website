@@ -2,7 +2,7 @@ const _ = require('lodash')
 const helper = require('../utils/helper')
 const httpCode = require('../utils/httpCode')
 const QuizService = require('../services/quiz')
-const asyncMiddleware = require('../middlewares/asyncMiddleware')
+const asyncWrapper = require('../helpers/asyncWrapper')
 
 const createQuiz = async (request, response) => {
     const { _id, data } = request.body
@@ -39,11 +39,15 @@ const getAllQuizzes = async (request, response) => {
     return response.send(helper.convertApi(payload, httpCode.SUCCESS, ''))
 }
 
-module.exports = {
-    createQuiz: asyncMiddleware(createQuiz),
-    getQuizzes: asyncMiddleware(getQuizzes),
-    getOneQuiz: asyncMiddleware(getOneQuiz),
-    getAllQuizzes: asyncMiddleware(getAllQuizzes),
-    updateQuiz: asyncMiddleware(updateQuiz),
-    deleteQuiz: asyncMiddleware(deleteQuiz)
+const quizController = {
+    createQuiz,
+    getQuizzes,
+    getOneQuiz,
+    getAllQuizzes,
+    updateQuiz,
+    deleteQuiz
 }
+
+const quizControllerWrapper = asyncWrapper(quizController, Object.keys(quizController))
+
+module.exports = quizControllerWrapper
