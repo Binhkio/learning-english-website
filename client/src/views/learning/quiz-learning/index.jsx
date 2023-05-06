@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import MainCard from 'ui-component/cards/MainCard';
 import userUtils from 'utils/user';
+import handlePayload from 'utils/handle-payload';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return (
@@ -67,8 +68,24 @@ export function QuizLearning() {
 
     const handleClose = () => {
         setOpen(false);
+        handleBookMarkLesosn()
         naviage('/');
     };
+
+    const handleBookMarkLesosn = async () => {
+        const { _id, quizzes: ids } = userUtils.getSessionStorage();
+        const payload = {
+            _id,
+            ids: [...ids, quiz._id],
+        };
+        try {
+            const response = await api.userApi.bookmarkQuiz(payload);
+            const resData = handlePayload(response.data);
+            userUtils.setSessionStorage(resData.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <MainCard title={quiz && quiz.name}>

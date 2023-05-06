@@ -88,14 +88,21 @@ export function QuizThumbnail({ quiz }) {
         try {
             const response = await api.userApi.bookmarkQuiz(payload);
             const resData = handlePayload(response.data);
-            user.setSessionStorage(resData.data);
+            setMarked(!marked);
+            let notiText = '';
+            !marked ? (notiText = 'Bookmark Success') : (notiText = 'Unbookmark Success');
+            notiRef.current.setState(notiText);
+            let newUserData = {}
+            if (marked) {
+                const lessonIds = quiz.lessons.map((item) => item._id);
+                newUserData = { ...resData.data, lessons: resData.data.lessons.filter((item) => {
+                    return lessonIds.forEach(lessonId => item !== lessonId)
+                })}
+            } else newUserData = resData.data
+            user.setSessionStorage(newUserData);
         } catch (error) {
             console.log(error);
         }
-        setMarked(!marked);
-        let notiText = ''
-        !marked ? notiText = 'Bookmark Success' : notiText = 'Unbookmark Success'
-        notiRef.current.setState(notiText)
     };
 
     const handleViewQuiz = () => {
