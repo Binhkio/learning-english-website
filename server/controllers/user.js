@@ -1,6 +1,7 @@
 const userService = require('../services/user')
 const helper = require('../utils/helper')
 const httpCode = require('../utils/httpCode')
+const asyncMiddleware = require('../middlewares/asyncMiddleware')
 
 const getCurrentUser = async (request, response) => {
     const { _id } = request.body
@@ -28,8 +29,8 @@ const changePassword = async (request, response) => {
 }
 
 module.exports = {
-    getCurrentUser,
-    updateQuizToUser,
-    updateLessonToUser,
-    changePassword
+    getCurrentUser: asyncMiddleware(getCurrentUser),
+    updateQuizToUser: asyncMiddleware(updateQuizToUser),
+    updateLessonToUser: asyncMiddleware(updateLessonToUser),
+    changePassword: asyncMiddleware(changePassword)
 }

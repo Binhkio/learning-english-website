@@ -1,14 +1,18 @@
 import { useTheme } from '@emotion/react';
-import { Box, Button, Container, FormControl, FormHelperText, Grid, OutlinedInput, Snackbar, Typography } from '@mui/material';
+import { Box, Button, Container, FormControl, FormHelperText, Grid, OutlinedInput, Typography } from '@mui/material';
 import { Formik } from 'formik';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as Yup from 'yup';
 import api from 'api';
 import userUtils from 'utils/user';
 import { useNavigate } from 'react-router';
+import NotificationComponent from 'components/notification';
+import handlePayload from 'utils/handle-payload';
 
 export default function ChangePasswordComponent({ ...other }) {
+    const notiRef = useRef();
+
     const theme = useTheme();
     const navigate = useNavigate();
 
@@ -30,18 +34,9 @@ export default function ChangePasswordComponent({ ...other }) {
                 .oneOf([Yup.ref('newPassword'), null], 'Password much match'),
         });
     };
-    const [notificationState, setNotificationState] = useState({
-        isReloead: false,
-        vertical: 'top',
-        horizontal: 'right',
-    });
-    const { isReloead, vertical, horizontal } = notificationState;
-    const handleCloseNotification = () => {
-        setNotificationState({ ...notificationState, isReloead: false });
-    };
-    const [snackbarMessage, setSnackbarMessage] = useState('');
+
     const handleEdit = async (values, { setErrors, setStatus, setSubmitting }) => {
-        const payload = {
+        const param = {
             _id: userData._id,
             data: {
                 oldPassword: values.oldPassword,
@@ -50,20 +45,17 @@ export default function ChangePasswordComponent({ ...other }) {
         };
 
         try {
-            const response = await api.userApi.changePassword(payload)
-            const responseData = response.data.data;
-            setSnackbarMessage(responseData.message);
-            setNotificationState({ ...notificationState, isReloead: true });
+            const response = await api.userApi.changePassword(param);
+            const payload = handlePayload(response.data);
+            notiRef.current.setState(payload.message);
             setStatus({ success: true });
             setSubmitting(false);
             navigate(window.location.pathname);
         } catch (error) {
-            console.error(error);            
-            setSnackbarMessage(error.message);
-            setNotificationState({ ...notificationState, isReloead: true });
             setStatus({ success: false });
             setErrors({ submit: error.message });
             setSubmitting(false);
+            notiRef.current.setState(error.message);
         }
     };
 
@@ -239,13 +231,7 @@ export default function ChangePasswordComponent({ ...other }) {
                         </form>
                     )}
                 </Formik>
-                <Snackbar
-                    anchorOrigin={{ vertical, horizontal }}
-                    open={isReloead}
-                    onClose={handleCloseNotification}
-                    message={snackbarMessage}
-                    key={vertical + horizontal}
-                />
+                <NotificationComponent ref={notiRef} />
             </Box>
         </>
     );

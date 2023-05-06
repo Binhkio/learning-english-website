@@ -1,6 +1,7 @@
 const adminService = require('../services/admin')
 const helper = require('../utils/helper')
 const httpCode = require('../utils/httpCode')
+const asyncMiddleware = require('../middlewares/asyncMiddleware')
 
 const getListUser = async (request, response) => {
     const payload = await adminService.getAllUser()
@@ -20,7 +21,7 @@ const editStatusUser = async (request, response) => {
 }
 
 module.exports = {
-    getListUser,
-    deleteUser,
-    editStatusUser
+    getListUser: asyncMiddleware(getListUser),
+    deleteUser: asyncMiddleware(deleteUser),
+    editStatusUser: asyncMiddleware(editStatusUser)
 }

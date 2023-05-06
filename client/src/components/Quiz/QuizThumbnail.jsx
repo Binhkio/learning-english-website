@@ -1,19 +1,7 @@
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Box, Stack } from '@mui/system';
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Divider,
-    IconButton,
-    Slide,
-    Snackbar,
-    Typography,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, Slide, Typography } from '@mui/material';
 import { BookmarkAdded, BookmarkBorder, DensityMediumOutlined } from '@mui/icons-material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -21,7 +9,9 @@ import _ from 'lodash';
 import api from 'api';
 import user from 'utils/user';
 import { forwardRef } from 'react';
-import token from 'utils/token';
+import NotificationComponent from 'components/notification';
+import { useRef } from 'react';
+import handlePayload from 'utils/handle-payload';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#f6f6f6',
@@ -40,26 +30,14 @@ const Transition = forwardRef(function Transition(props, ref) {
     );
 });
 
-export default function QuizThumbnail({ quiz }) {
+export function QuizThumbnail({ quiz }) {
+    const notiRef = useRef();
+
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
 
-    const [notificationState, setNotificationState] = useState({
-        isReloead: false,
-        vertical: 'top',
-        horizontal: 'right',
-    });
-
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-
     const [marked, setMarked] = useState(user.getSessionStorage().quizzes.findIndex((id) => id === quiz._id) > -1);
-
-    const { isReloead, vertical, horizontal } = notificationState;
-
-    const handleCloseNotification = () => {
-        setNotificationState({ ...notificationState, isReloead: false });
-    };
 
     const [userData, setUserData] = useState(user.getSessionStorage);
 
@@ -73,7 +51,7 @@ export default function QuizThumbnail({ quiz }) {
 
     const handleResetProcess = async () => {
         const userData = user.getSessionStorage();
-        const payload = {
+        const param = {
             _id: userData._id,
             data: {
                 lessons: [],
@@ -81,27 +59,23 @@ export default function QuizThumbnail({ quiz }) {
         };
 
         try {
-            await api.adminApi.editUserData(payload)
+            const response = await api.adminApi.editUserData(param);
+            const payload = handlePayload(response.data);
             setOpen(false);
-            setNotificationState({ ...notificationState, isReloead: true });
-            setSnackbarMessage('Update success');
-            reloeadCurrentUser()
+            notiRef.current.setState(payload.data.message);
+            reloeadCurrentUser();
         } catch (error) {
             setOpen(false);
-            setNotificationState({ ...notificationState, isReloead: true });
-            setSnackbarMessage(error.message);
+            console.log(error);
         }
     };
 
     const reloeadCurrentUser = async () => {
-        try {
-            const response = await api.userApi.getCurrentUser({_id: userData._id})
-            const payload = response.data.data
+        await api.userApi.getCurrentUser({ _id: userData._id }).then((response) => {
+            const payload = response.data.data;
             user.setSessionStorage(payload.user);
-        } catch (error) {
-            console.error(error)
-        }
-      }
+        });
+    };
 
     if (_.isNil(quiz)) return <></>;
 
@@ -112,15 +86,16 @@ export default function QuizThumbnail({ quiz }) {
             ids: marked ? userData.quizzes.filter((q) => q !== quiz._id) : [...userData.quizzes, quiz._id],
         };
         try {
-            const response = await api.userApi.bookmarkQuiz(payload)
-            const resData = response.data.data;
-            user.setSessionStorage(resData);
-            setNotificationState({ ...notificationState, isReloead: true });
-            setSnackbarMessage('Update success');
-            setMarked(!marked);
+            const response = await api.userApi.bookmarkQuiz(payload);
+            const resData = handlePayload(response.data);
+            user.setSessionStorage(resData.data);
         } catch (error) {
-            console.error(error);
+            console.log(error);
         }
+        setMarked(!marked);
+        let notiText = ''
+        !marked ? notiText = 'Bookmark Success' : notiText = 'Unbookmark Success'
+        notiRef.current.setState(notiText)
     };
 
     const handleViewQuiz = () => {
@@ -156,13 +131,7 @@ export default function QuizThumbnail({ quiz }) {
                     </IconButton>
                 </Stack>
             </Item>
-            <Snackbar
-                anchorOrigin={{ vertical, horizontal }}
-                open={isReloead}
-                onClose={handleCloseNotification}
-                message={snackbarMessage}
-                key={vertical + horizontal}
-            />
+            <NotificationComponent ref={notiRef} />
             <Dialog
                 open={open}
                 TransitionComponent={Transition}

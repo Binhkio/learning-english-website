@@ -2,6 +2,7 @@ const _ = require('lodash')
 const helper = require('../utils/helper')
 const httpCode = require('../utils/httpCode')
 const QuizService = require('../services/quiz')
+const asyncMiddleware = require('../middlewares/asyncMiddleware')
 
 const createQuiz = async (request, response) => {
     const { _id, data } = request.body
@@ -39,10 +40,10 @@ const getAllQuizzes = async (request, response) => {
 }
 
 module.exports = {
-    createQuiz,
-    getQuizzes,
-    getOneQuiz,
-    getAllQuizzes,
-    updateQuiz,
-    deleteQuiz,
+    createQuiz: asyncMiddleware(createQuiz),
+    getQuizzes: asyncMiddleware(getQuizzes),
+    getOneQuiz: asyncMiddleware(getOneQuiz),
+    getAllQuizzes: asyncMiddleware(getAllQuizzes),
+    updateQuiz: asyncMiddleware(updateQuiz),
+    deleteQuiz: asyncMiddleware(deleteQuiz)
 }

@@ -15,7 +15,6 @@ import { SET_MENU } from 'store/actions';
 
 // assets
 import { IconChevronRight } from '@tabler/icons';
-import { useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import token from 'utils/token';
 import _ from 'lodash'
