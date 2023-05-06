@@ -29,7 +29,7 @@ const findLessonByArrayId = async (ids) => {
 
 const insertData = async (condition) => {
   const quiz = new QuizEntity(condition)
-  return await Quiz.create(quiz);
+  return await Quiz.create(condition);
 }
 
 const deleteQuiz = async (condition) => {
@@ -45,6 +45,35 @@ const editQuiz = async (quiz_id, newValue) => {
 const getAllQuizzes = async () => {
   const result = await Quiz.find()
   return result
+}
+
+const findQuizzes = async () => {
+  const quizzes = await Quiz.aggregate([
+    {
+      $lookup: {
+        from: collection,
+        localField: field,
+        foreignField: field,
+        as: result
+      }
+    },
+    {
+      $unwind: {
+        path: path,
+        includeArrayIndex: 'string',
+        preserveNullAndEmptyArrays: boolean
+      }
+    },
+    {
+      $lookup: {
+        from: collection,
+        localField: field,
+        foreignField: field,
+        as: result
+      }
+    }
+  ]);
+  return quizzes;
 }
 
 module.exports = {
